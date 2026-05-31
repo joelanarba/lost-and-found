@@ -41,7 +41,7 @@ review claims, manage users and reports, export data, and audit every action. An
 | UI | JavaFX 21 (FXML + CSS) |
 | Database | SQLite via `org.xerial:sqlite-jdbc` |
 | Password hashing | BCrypt (`org.mindrot:jbcrypt`) |
-| Build tool | Apache Maven |
+| Build tool | Apache Maven (Maven Wrapper bundled) |
 | Architecture | Strict MVC — Controller → Service → DAO → Database |
 
 ---
@@ -49,31 +49,47 @@ review claims, manage users and reports, export data, and audit every action. An
 ## Prerequisites
 
 - **JDK 17 or newer** (developed and verified on JDK 26)
-- **Apache Maven 3.6+**
+- Apache Maven is **optional** — the project ships with the Maven Wrapper (`mvnw`)
 
-Check your setup:
+Check your JDK:
 
 ```bash
 java -version
-mvn -version
 ```
 
 ---
 
 ## Getting Started (Installation & Running)
 
+Using the bundled **Maven Wrapper** — no local Maven installation required:
+
 ```bash
 git clone <repo-url>
 cd lost-and-found
+
+# Windows
+mvnw.cmd javafx:run
+
+# macOS / Linux
+./mvnw javafx:run
+```
+
+Or, if you already have Maven installed:
+
+```bash
 mvn javafx:run
 ```
 
-Maven downloads JavaFX and the other dependencies automatically on the first run, then
-launches the application at the Login screen.
+The wrapper downloads Maven, JavaFX and the other dependencies automatically on first run,
+then launches the application at the Login screen.
 
-> **Windows note:** if `mvn` is not recognised, ensure Maven's `bin` directory is on your
-> `PATH` and that `JAVA_HOME` points to your JDK (e.g. `C:\Program Files\Java\jdk-26.0.1`).
-> The SQLite database and uploaded images are created automatically under `data/`.
+> **Windows note:** ensure a JDK 17+ is installed and `JAVA_HOME` points to it
+> (e.g. `C:\Program Files\Java\jdk-26.0.1`). The SQLite database and uploaded images are
+> created automatically under `data/`.
+
+> **Tip — instant demo:** on the Login screen click **“Load demo data”** to populate the
+> app with sample students, lost/found items (with matches) and a pending claim, so you can
+> explore every feature right away.
 
 ---
 
@@ -86,6 +102,9 @@ launches the application at the Login screen.
 
 This account is seeded automatically on first launch.
 **Note:** change the password after first login in a production setting.
+
+**Demo accounts:** “Load demo data” on the Login screen also creates sample students, e.g.
+`kofi@university.edu` / `Password1`.
 
 ---
 
@@ -106,10 +125,12 @@ This account is seeded automatically on first launch.
 ```
 lost-and-found/
 ├── pom.xml                     Maven build configuration
+├── mvnw, mvnw.cmd, .mvn/       Maven Wrapper (run without installing Maven)
 ├── README.md
 ├── data/                       SQLite database + uploaded images (created at runtime)
 ├── docs/
-│   └── diagrams/               UML: use-case, class, ER, architecture (PlantUML)
+│   ├── diagrams/               UML: use-case, class, ER, architecture (PlantUML + PNG)
+│   └── screenshots/            README screenshots
 ├── src/
 │   ├── main/java/com/lfms/
 │   │   ├── Main.java / App.java     Launcher + JavaFX application
@@ -141,8 +162,17 @@ FXML + CSS  →  Controllers  →  Services  →  DAOs  →  DatabaseManager  �
 - **DAOs** are the only classes that use JDBC `Connection`/`PreparedStatement`.
 - **Utilities** (session, navigation, hashing, images, validation, CSV, dialogs) support all layers.
 
-Full diagrams are in [`docs/diagrams/`](docs/diagrams) (PlantUML): use-case, class,
-entity-relationship and architecture.
+![Architecture](docs/diagrams/architecture.png)
+
+### Use Case Diagram
+
+![Use case diagram](docs/diagrams/use-case.png)
+
+### Class Diagram
+
+![Class diagram](docs/diagrams/class-diagram.png)
+
+PlantUML sources for all diagrams live in [`docs/diagrams/`](docs/diagrams).
 
 ---
 
@@ -150,7 +180,8 @@ entity-relationship and architecture.
 
 Five tables created automatically with `CREATE TABLE IF NOT EXISTS`:
 `users`, `items`, `claims`, `matches`, `audit_log`.
-See [`docs/diagrams/er-diagram.puml`](docs/diagrams/er-diagram.puml) for the full ERD.
+
+![Entity relationship diagram](docs/diagrams/er-diagram.png)
 
 ---
 

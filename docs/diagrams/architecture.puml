@@ -1,5 +1,5 @@
 @startuml architecture
-title Lost & Found Management System — Layered Architecture
+title Lost & Found Management System - Layered Architecture
 skinparam componentStyle rectangle
 skinparam linetype ortho
 

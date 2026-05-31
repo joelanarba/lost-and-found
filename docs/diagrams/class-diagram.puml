@@ -1,5 +1,5 @@
 @startuml class-diagram
-title Lost & Found Management System — Class Diagram (MVC)
+title Lost & Found Management System - Class Diagram (MVC)
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
 hide empty members

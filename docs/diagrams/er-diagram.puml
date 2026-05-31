@@ -1,5 +1,5 @@
 @startuml er-diagram
-title Lost & Found Management System — Entity Relationship Diagram
+title Lost & Found Management System - Entity Relationship Diagram
 hide circle
 skinparam linetype ortho
 

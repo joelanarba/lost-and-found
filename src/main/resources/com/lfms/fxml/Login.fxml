@@ -30,5 +30,8 @@
             <Label text="Don't have an account?" styleClass="auth-sub"/>
             <Label text="Register" styleClass="link-label" onMouseClicked="#goToRegister"/>
         </HBox>
+        <HBox alignment="CENTER">
+            <Label text="First time here? Load demo data" styleClass="link-label" onMouseClicked="#loadDemoData"/>
+        </HBox>
     </VBox>
 </StackPane>

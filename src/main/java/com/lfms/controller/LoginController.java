@@ -2,6 +2,7 @@ package com.lfms.controller;
 
 import com.lfms.model.User;
 import com.lfms.service.AuthService;
+import com.lfms.service.DemoDataService;
 import com.lfms.util.SceneNavigator;
 import com.lfms.util.SessionManager;
 import com.lfms.util.ValidationUtil;
@@ -22,14 +23,13 @@ public class LoginController implements SceneNavigator.DataReceiver {
     @FXML private Label successLabel;
 
     private final AuthService authService = new AuthService();
+    private final DemoDataService demoDataService = new DemoDataService();
 
     /** Receives an optional success message (e.g. after registration). */
     @Override
     public void receiveData(Object data) {
         if (data instanceof String message && !message.isBlank()) {
-            successLabel.setText(message);
-            successLabel.setVisible(true);
-            successLabel.setManaged(true);
+            showSuccess(message);
         }
     }
 
@@ -64,5 +64,27 @@ public class LoginController implements SceneNavigator.DataReceiver {
     @FXML
     private void goToRegister(MouseEvent event) {
         SceneNavigator.navigateTo("/com/lfms/fxml/Register.fxml");
+    }
+
+    @FXML
+    private void loadDemoData(MouseEvent event) {
+        ValidationUtil.clearError(errorLabel);
+        try {
+            boolean seeded = demoDataService.seedIfEmpty();
+            if (seeded) {
+                showSuccess("Demo data loaded. Sign in as  kofi@university.edu / Password1  "
+                        + "(admin: admin@lfms.edu / Admin@1234).");
+            } else {
+                showSuccess("Demo data is already loaded. Sign in as  kofi@university.edu / Password1.");
+            }
+        } catch (RuntimeException e) {
+            ValidationUtil.showError(errorLabel, "Could not load demo data: " + e.getMessage());
+        }
+    }
+
+    private void showSuccess(String message) {
+        successLabel.setText(message);
+        successLabel.setVisible(true);
+        successLabel.setManaged(true);
     }
 }

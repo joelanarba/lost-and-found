@@ -1,5 +1,5 @@
 @startuml use-case
-title Lost & Found Management System — Use Case Diagram
+title Lost & Found Management System - Use Case Diagram
 left to right direction
 skinparam packageStyle rectangle
 skinparam actorStyle awesome
@@ -8,7 +8,7 @@ actor "Student / Staff" as Student
 actor "Administrator" as Admin
 actor "System\n(automated)" as System
 
-rectangle "Lost & Found Management System" {
+rectangle "LFMS" {
   usecase "Register" as UC_Reg
   usecase "Login" as UC_Login
   usecase "Report Lost Item" as UC_Lost
