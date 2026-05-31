@@ -1,0 +1,61 @@
+@startuml architecture
+title Lost & Found Management System — Layered Architecture
+skinparam componentStyle rectangle
+skinparam linetype ortho
+
+package "JavaFX UI Layer" as UI {
+  [FXML Views] as FXML
+  [main.css] as CSS
+  [Controllers] as CTRL
+}
+
+package "Service Layer\n(business logic)" as SVC {
+  [AuthService]
+  [UserService]
+  [ItemService]
+  [ClaimService]
+  [MatchingEngine]
+  [ExportService]
+  [AuditService]
+}
+
+package "DAO Layer\n(data access)" as DAO {
+  [UserDAO]
+  [ItemDAO]
+  [ClaimDAO]
+  [MatchDAO]
+  [AuditLogDAO]
+  [DatabaseManager]
+}
+
+package "Utility Layer\n(cross-cutting support)" as UTIL {
+  [SessionManager]
+  [SceneNavigator]
+  [HashUtil]
+  [ImageUtil]
+  [ValidationUtil]
+  [CsvExporter]
+  [Dialogs]
+  [Badges]
+}
+
+database "SQLite\n(data/lfms.db)" as DB
+folder "data/images" as IMG
+
+FXML ..> CTRL
+CSS ..> FXML
+CTRL --> SVC : calls
+SVC --> DAO : calls
+DAO --> [DatabaseManager]
+[DatabaseManager] --> DB : JDBC
+
+CTRL ..> UTIL
+SVC ..> UTIL
+[ImageUtil] ..> IMG
+
+note right of UTIL
+  Utilities support every layer:
+  session, navigation, hashing,
+  images, validation, CSV, dialogs.
+end note
+@enduml

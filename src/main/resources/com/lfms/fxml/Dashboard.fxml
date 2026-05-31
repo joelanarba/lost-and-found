@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.lfms.controller.DashboardController" styleClass="root">
+    <fx:include fx:id="sidebar" source="Sidebar.fxml"/>
+    <ScrollPane fitToWidth="true" styleClass="content-scroll" HBox.hgrow="ALWAYS">
+        <VBox styleClass="content-area" spacing="20.0">
+            <Label text="Dashboard" styleClass="page-title"/>
+            <Label fx:id="welcomeLabel" text="Welcome back" styleClass="page-subtitle"/>
+
+            <HBox spacing="18.0">
+                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label fx:id="openLostLabel" text="0" styleClass="stat-number"/>
+                    <Label text="Open Lost Reports" styleClass="stat-label"/>
+                </VBox>
+                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label fx:id="openFoundLabel" text="0" styleClass="stat-number"/>
+                    <Label text="Open Found Reports" styleClass="stat-label"/>
+                </VBox>
+                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label fx:id="pendingClaimsLabel" text="0" styleClass="stat-number"/>
+                    <Label text="My Pending Claims" styleClass="stat-label"/>
+                </VBox>
+            </HBox>
+
+            <Region prefHeight="6.0"/>
+            <Label text="Suggested Matches For You" styleClass="section-title"/>
+            <FlowPane fx:id="matchesPane" hgap="16.0" vgap="16.0"/>
+            <Label fx:id="emptyMatchesLabel"
+                   text="No matches yet. Report your items to get started."
+                   styleClass="empty-state" visible="false" managed="false"/>
+        </VBox>
+    </ScrollPane>
+</HBox>

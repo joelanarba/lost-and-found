@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.lfms.controller.admin.AdminClaimsController" styleClass="root">
+    <fx:include fx:id="adminSidebar" source="AdminSidebar.fxml"/>
+    <VBox styleClass="content-area" spacing="16.0" HBox.hgrow="ALWAYS">
+        <Label text="Pending Claims" styleClass="page-title"/>
+
+        <HBox spacing="16.0" VBox.vgrow="ALWAYS">
+            <TableView fx:id="claimsTable" prefWidth="600.0">
+                <columns>
+                    <TableColumn fx:id="idCol" text="ID" prefWidth="50.0"/>
+                    <TableColumn fx:id="itemCol" text="Item" prefWidth="150.0"/>
+                    <TableColumn fx:id="claimantCol" text="Claimant" prefWidth="130.0"/>
+                    <TableColumn fx:id="indexCol" text="Index No." prefWidth="90.0"/>
+                    <TableColumn fx:id="dateCol" text="Submitted" prefWidth="100.0"/>
+                    <TableColumn fx:id="actionsCol" text="" prefWidth="80.0" sortable="false"/>
+                </columns>
+            </TableView>
+
+            <VBox styleClass="review-panel" spacing="8.0" HBox.hgrow="ALWAYS">
+                <Label text="Claim Review" styleClass="section-title"/>
+                <ScrollPane fitToWidth="true" styleClass="content-scroll" VBox.vgrow="ALWAYS">
+                    <VBox spacing="8.0">
+                        <Label fx:id="reviewPlaceholder"
+                               text="Select a claim and click Review to see the details here."
+                               styleClass="empty-state" wrapText="true"/>
+
+                        <VBox fx:id="reviewContent" spacing="8.0" visible="false" managed="false">
+                            <HBox spacing="14.0">
+                                <StackPane styleClass="image-frame">
+                                    <ImageView fx:id="reviewImage" fitWidth="150.0" fitHeight="150.0" preserveRatio="true"/>
+                                </StackPane>
+                                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                                    <Label fx:id="reviewItemName" styleClass="detail-value" wrapText="true"/>
+                                    <Label text="LOCATION" styleClass="detail-key"/>
+                                    <Label fx:id="reviewItemLocation" styleClass="detail-value" wrapText="true"/>
+                                </VBox>
+                            </HBox>
+                            <Label text="ITEM DESCRIPTION" styleClass="detail-key"/>
+                            <Label fx:id="reviewItemDesc" styleClass="detail-value" wrapText="true"/>
+
+                            <Separator/>
+                            <Label text="CLAIMANT" styleClass="detail-key"/>
+                            <Label fx:id="reviewClaimant" styleClass="detail-value" wrapText="true"/>
+                            <Label text="IDENTIFYING FEATURES PROVIDED" styleClass="detail-key"/>
+                            <Label fx:id="reviewFeatures" styleClass="detail-value" wrapText="true"/>
+                            <Label text="PROOF PROVIDED" styleClass="detail-key"/>
+                            <Label fx:id="reviewProof" styleClass="detail-value" wrapText="true"/>
+
+                            <Separator/>
+                            <Label text="Decision reason (required to reject)" styleClass="form-label"/>
+                            <TextField fx:id="reasonField" promptText="e.g. proof did not match the item records"/>
+                            <Label fx:id="reasonError" styleClass="error-label" visible="false" managed="false"/>
+                            <HBox spacing="10.0">
+                                <Button fx:id="approveBtn" text="Approve" styleClass="btn-success" onAction="#approve"/>
+                                <Button fx:id="rejectBtn" text="Reject" styleClass="btn-danger" onAction="#reject"/>
+                            </HBox>
+                            <Region prefHeight="8.0"/>
+                        </VBox>
+                    </VBox>
+                </ScrollPane>
+            </VBox>
+        </HBox>
+    </VBox>
+</HBox>

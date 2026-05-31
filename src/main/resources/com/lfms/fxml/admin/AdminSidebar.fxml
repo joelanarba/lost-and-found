@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.lfms.controller.admin.AdminSidebarController"
+      styleClass="sidebar" prefWidth="220.0" fillWidth="true">
+    <Label text="LFMS Admin" styleClass="sidebar-title"/>
+    <Region prefHeight="8.0"/>
+    <Button fx:id="btnDashboard" text="Dashboard" styleClass="sidebar-btn" onAction="#goDashboard" maxWidth="Infinity"/>
+    <Button fx:id="btnClaims" text="Claims" styleClass="sidebar-btn" onAction="#goClaims" maxWidth="Infinity"/>
+    <Button fx:id="btnReports" text="All Reports" styleClass="sidebar-btn" onAction="#goReports" maxWidth="Infinity"/>
+    <Button fx:id="btnUsers" text="Users" styleClass="sidebar-btn" onAction="#goUsers" maxWidth="Infinity"/>
+    <Button fx:id="btnAudit" text="Audit Log" styleClass="sidebar-btn" onAction="#goAudit" maxWidth="Infinity"/>
+    <Region VBox.vgrow="ALWAYS"/>
+    <Separator styleClass="sidebar-divider"/>
+    <Region prefHeight="8.0"/>
+    <Label fx:id="userNameLabel" text="Admin" styleClass="sidebar-user"/>
+    <Label fx:id="userRoleLabel" text="ADMIN" styleClass="sidebar-role"/>
+    <Region prefHeight="10.0"/>
+    <Button fx:id="btnLogout" text="Logout" styleClass="sidebar-btn" onAction="#logout" maxWidth="Infinity"/>
+    <Region prefHeight="12.0"/>
+</VBox>

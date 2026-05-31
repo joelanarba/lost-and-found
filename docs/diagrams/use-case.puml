@@ -1,0 +1,61 @@
+@startuml use-case
+title Lost & Found Management System — Use Case Diagram
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "Student / Staff" as Student
+actor "Administrator" as Admin
+actor "System\n(automated)" as System
+
+rectangle "Lost & Found Management System" {
+  usecase "Register" as UC_Reg
+  usecase "Login" as UC_Login
+  usecase "Report Lost Item" as UC_Lost
+  usecase "Report Found Item" as UC_Found
+  usecase "Browse / Search Items" as UC_Browse
+  usecase "View Item Detail" as UC_Detail
+  usecase "Submit Claim" as UC_Claim
+  usecase "View My Reports" as UC_My
+
+  usecase "Review Claims" as UC_Review
+  usecase "Manage Users" as UC_Users
+  usecase "View All Reports" as UC_AllRep
+  usecase "Delete Reports" as UC_Del
+  usecase "Export CSV" as UC_Export
+  usecase "View Audit Log" as UC_Audit
+
+  usecase "Run Matching Engine" as UC_Match
+}
+
+' Student / Staff
+Student --> UC_Reg
+Student --> UC_Login
+Student --> UC_Lost
+Student --> UC_Found
+Student --> UC_Browse
+Student --> UC_Detail
+Student --> UC_Claim
+Student --> UC_My
+
+' Administrator
+Admin --> UC_Login
+Admin --> UC_Review
+Admin --> UC_Users
+Admin --> UC_AllRep
+Admin --> UC_Del
+Admin --> UC_Export
+Admin --> UC_Audit
+
+' System (automated)
+System --> UC_Match
+
+' Relationships
+UC_Lost  ..> UC_Match : <<include>>
+UC_Found ..> UC_Match : <<include>>
+UC_Claim ..> UC_Detail : <<extend>>
+UC_Del   ..> UC_AllRep : <<extend>>
+UC_Lost  ..> UC_Login  : <<include>>
+UC_Found ..> UC_Login  : <<include>>
+UC_Claim ..> UC_Login  : <<include>>
+@enduml

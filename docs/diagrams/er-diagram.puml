@@ -1,0 +1,72 @@
+@startuml er-diagram
+title Lost & Found Management System — Entity Relationship Diagram
+hide circle
+skinparam linetype ortho
+
+entity users {
+  * user_id : INTEGER <<PK>>
+  --
+  * name : TEXT
+  * index_no : TEXT <<unique>>
+  * email : TEXT <<unique>>
+  * password_hash : TEXT
+  phone : TEXT
+  * role : TEXT
+  * is_active : INTEGER
+  * created_at : TEXT
+}
+
+entity items {
+  * item_id : INTEGER <<PK>>
+  --
+  * user_id : INTEGER <<FK>>
+  * type : TEXT
+  * name : TEXT
+  * category : TEXT
+  * description : TEXT
+  location : TEXT
+  image_path : TEXT
+  date_reported : TEXT
+  * status : TEXT
+  * created_at : TEXT
+}
+
+entity claims {
+  * claim_id : INTEGER <<PK>>
+  --
+  * item_id : INTEGER <<FK>>
+  * claimant_id : INTEGER <<FK>>
+  * features_desc : TEXT
+  * proof_desc : TEXT
+  * status : TEXT
+  admin_note : TEXT
+  * created_at : TEXT
+}
+
+entity matches {
+  * match_id : INTEGER <<PK>>
+  --
+  * lost_item_id : INTEGER <<FK>>
+  * found_item_id : INTEGER <<FK>>
+  * score : INTEGER
+  * created_at : TEXT
+}
+
+entity audit_log {
+  * log_id : INTEGER <<PK>>
+  --
+  actor_id : INTEGER <<FK>>
+  * action : TEXT
+  target_type : TEXT
+  target_id : INTEGER
+  note : TEXT
+  * timestamp : TEXT
+}
+
+users    ||--o{ items     : reports
+users    ||--o{ claims    : submits
+items    ||--o{ claims    : receives
+items    ||--o{ matches   : "lost side"
+items    ||--o{ matches   : "found side"
+users    ||--o{ audit_log : performs
+@enduml

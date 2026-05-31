@@ -1,0 +1,29 @@
+# Maven
+target/
+build/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.classpath
+.project
+nbproject/
+.nb-gradle/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Runtime data (generated at run time)
+data/*.db
+data/*.db-journal
+data/*.sqlite
+data/images/*
+!data/images/.gitkeep
+
+# Logs
+*.log

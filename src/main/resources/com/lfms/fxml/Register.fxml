@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.lfms.controller.RegisterController" styleClass="auth-root">
+    <VBox styleClass="auth-card" spacing="3.0" maxWidth="440.0" maxHeight="-Infinity">
+        <Label text="Create your account" styleClass="auth-title"/>
+        <Label text="Join the Lost &amp; Found community" styleClass="auth-sub"/>
+        <Label fx:id="generalError" styleClass="error-label" wrapText="true" visible="false" managed="false"/>
+        <Region prefHeight="10.0"/>
+
+        <Label text="Full Name *" styleClass="form-label"/>
+        <TextField fx:id="nameField" promptText="e.g. Joel Anarba"/>
+        <Label fx:id="nameError" styleClass="error-label" visible="false" managed="false"/>
+
+        <Label text="Index / ID Number *" styleClass="form-label"/>
+        <TextField fx:id="indexField" promptText="e.g. 10987654"/>
+        <Label fx:id="indexError" styleClass="error-label" visible="false" managed="false"/>
+
+        <Label text="Email *" styleClass="form-label"/>
+        <TextField fx:id="emailField" promptText="you@university.edu"/>
+        <Label fx:id="emailError" styleClass="error-label" visible="false" managed="false"/>
+
+        <Label text="Password *" styleClass="form-label"/>
+        <PasswordField fx:id="passwordField" promptText="At least 8 characters"/>
+        <Label fx:id="passwordError" styleClass="error-label" visible="false" managed="false"/>
+
+        <Label text="Confirm Password *" styleClass="form-label"/>
+        <PasswordField fx:id="confirmField" promptText="Re-enter your password"/>
+        <Label fx:id="confirmError" styleClass="error-label" visible="false" managed="false"/>
+
+        <Label text="Phone (optional)" styleClass="form-label"/>
+        <TextField fx:id="phoneField" promptText="e.g. 024 000 0000"/>
+
+        <Region prefHeight="14.0"/>
+        <Button text="Create Account" styleClass="btn-primary" onAction="#handleRegister" maxWidth="Infinity"/>
+        <Region prefHeight="8.0"/>
+        <HBox spacing="5.0" alignment="CENTER">
+            <Label text="Already have an account?" styleClass="auth-sub"/>
+            <Label text="Sign in" styleClass="link-label" onMouseClicked="#goToLogin"/>
+        </HBox>
+    </VBox>
+</StackPane>

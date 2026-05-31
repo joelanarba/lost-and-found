@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.lfms.controller.admin.AdminDashboardController" styleClass="root">
+    <fx:include fx:id="adminSidebar" source="AdminSidebar.fxml"/>
+    <ScrollPane fitToWidth="true" styleClass="content-scroll" HBox.hgrow="ALWAYS">
+        <VBox styleClass="content-area" spacing="20.0">
+            <Label text="Admin Dashboard" styleClass="page-title"/>
+
+            <FlowPane hgap="16.0" vgap="16.0">
+                <VBox styleClass="stat-card">
+                    <Label fx:id="totalUsersLabel" text="0" styleClass="stat-number"/>
+                    <Label text="Total Users" styleClass="stat-label"/>
+                </VBox>
+                <VBox styleClass="stat-card">
+                    <Label fx:id="openLostLabel" text="0" styleClass="stat-number"/>
+                    <Label text="Open Lost" styleClass="stat-label"/>
+                </VBox>
+                <VBox styleClass="stat-card">
+                    <Label fx:id="openFoundLabel" text="0" styleClass="stat-number"/>
+                    <Label text="Open Found" styleClass="stat-label"/>
+                </VBox>
+                <VBox fx:id="pendingCard" styleClass="stat-card">
+                    <Label fx:id="pendingClaimsLabel" text="0" styleClass="stat-number"/>
+                    <Label text="Pending Claims" styleClass="stat-label"/>
+                </VBox>
+                <VBox styleClass="stat-card">
+                    <Label fx:id="resolvedLabel" text="0" styleClass="stat-number"/>
+                    <Label text="Resolved Items" styleClass="stat-label"/>
+                </VBox>
+            </FlowPane>
+
+            <HBox spacing="20.0">
+                <VBox styleClass="chart-card" HBox.hgrow="ALWAYS">
+                    <PieChart fx:id="typePie" prefHeight="300.0" legendSide="BOTTOM"/>
+                </VBox>
+                <VBox styleClass="chart-card" HBox.hgrow="ALWAYS">
+                    <BarChart fx:id="claimsBar" prefHeight="300.0" legendVisible="false">
+                        <xAxis>
+                            <CategoryAxis fx:id="barX"/>
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis fx:id="barY"/>
+                        </yAxis>
+                    </BarChart>
+                </VBox>
+            </HBox>
+
+            <Label text="Recent Activity" styleClass="section-title"/>
+            <TableView fx:id="recentTable" prefHeight="260.0">
+                <columns>
+                    <TableColumn fx:id="recentTimeCol" text="Timestamp" prefWidth="180.0"/>
+                    <TableColumn fx:id="recentActionCol" text="Action" prefWidth="180.0"/>
+                    <TableColumn fx:id="recentNoteCol" text="Note" prefWidth="420.0"/>
+                </columns>
+            </TableView>
+            <Region prefHeight="6.0"/>
+        </VBox>
+    </ScrollPane>
+</HBox>

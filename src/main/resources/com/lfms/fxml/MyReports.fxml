@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.lfms.controller.MyReportsController" styleClass="root">
+    <fx:include fx:id="sidebar" source="Sidebar.fxml"/>
+    <VBox styleClass="content-area" spacing="16.0" HBox.hgrow="ALWAYS">
+        <Label text="My Reports" styleClass="page-title"/>
+
+        <TabPane VBox.vgrow="ALWAYS" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab text="My Lost Items">
+                    <content>
+                        <TableView fx:id="lostTable">
+                            <columns>
+                                <TableColumn fx:id="lostImageCol" text="" prefWidth="64.0" sortable="false"/>
+                                <TableColumn fx:id="lostNameCol" text="Name" prefWidth="220.0"/>
+                                <TableColumn fx:id="lostCategoryCol" text="Category" prefWidth="140.0"/>
+                                <TableColumn fx:id="lostStatusCol" text="Status" prefWidth="130.0"/>
+                                <TableColumn fx:id="lostDateCol" text="Date Posted" prefWidth="160.0"/>
+                                <TableColumn fx:id="lostActionsCol" text="Actions" prefWidth="170.0" sortable="false"/>
+                            </columns>
+                        </TableView>
+                    </content>
+                </Tab>
+                <Tab text="My Found Items">
+                    <content>
+                        <TableView fx:id="foundTable">
+                            <columns>
+                                <TableColumn fx:id="foundImageCol" text="" prefWidth="64.0" sortable="false"/>
+                                <TableColumn fx:id="foundNameCol" text="Name" prefWidth="220.0"/>
+                                <TableColumn fx:id="foundCategoryCol" text="Category" prefWidth="140.0"/>
+                                <TableColumn fx:id="foundStatusCol" text="Status" prefWidth="130.0"/>
+                                <TableColumn fx:id="foundDateCol" text="Date Posted" prefWidth="150.0"/>
+                                <TableColumn fx:id="foundActionsCol" text="Actions" prefWidth="240.0" sortable="false"/>
+                            </columns>
+                        </TableView>
+                    </content>
+                </Tab>
+                <Tab text="My Claims">
+                    <content>
+                        <TableView fx:id="claimsTable">
+                            <columns>
+                                <TableColumn fx:id="claimItemCol" text="Item Name" prefWidth="220.0"/>
+                                <TableColumn fx:id="claimDateCol" text="Date Claimed" prefWidth="170.0"/>
+                                <TableColumn fx:id="claimStatusCol" text="Status" prefWidth="120.0"/>
+                                <TableColumn fx:id="claimNoteCol" text="Admin Note" prefWidth="240.0"/>
+                                <TableColumn fx:id="claimActionsCol" text="Actions" prefWidth="120.0" sortable="false"/>
+                            </columns>
+                        </TableView>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </VBox>
+</HBox>

@@ -1,0 +1,241 @@
+@startuml class-diagram
+title Lost & Found Management System — Class Diagram (MVC)
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+hide empty members
+
+package model {
+  class User {
+    - userId : int
+    - name : String
+    - indexNo : String
+    - email : String
+    - passwordHash : String
+    - phone : String
+    - role : String
+    - isActive : boolean
+    - createdAt : String
+    + isAdmin() : boolean
+    + getters/setters()
+  }
+  class Item {
+    - itemId : int
+    - userId : int
+    - type : String
+    - name : String
+    - category : String
+    - description : String
+    - location : String
+    - imagePath : String
+    - dateReported : String
+    - status : String
+    - createdAt : String
+    + isLost() : boolean
+    + isFound() : boolean
+    + isOpen() : boolean
+  }
+  class Claim {
+    - claimId : int
+    - itemId : int
+    - claimantId : int
+    - featuresDesc : String
+    - proofDesc : String
+    - status : String
+    - adminNote : String
+    - createdAt : String
+    .. joined ..
+    - itemName, claimantName : String
+    - claimantEmail, claimantPhone : String
+    - reporterName, reporterEmail, reporterPhone : String
+  }
+  class Match {
+    - matchId : int
+    - lostItemId : int
+    - foundItemId : int
+    - score : int
+    - createdAt : String
+    + getConfidence() : String
+  }
+  class AuditLog {
+    - logId : int
+    - actorId : int
+    - action : String
+    - targetType : String
+    - targetId : int
+    - note : String
+    - timestamp : String
+    - actorName : String
+  }
+}
+
+package dao {
+  class UserDAO {
+    + findByEmail(email) : User
+    + findById(id) : User
+    + create(User) : boolean
+    + emailExists(email) : boolean
+    + indexNoExists(index) : boolean
+    + findAll() : List<User>
+    + updateActive(id, active) : boolean
+    + delete(id) : boolean
+    + countByRole(role) : int
+  }
+  class ItemDAO {
+    + create(Item) : int
+    + findById(id) : Item
+    + findAll() : List<Item>
+    + findByType(type) : List<Item>
+    + findByUser(id) : List<Item>
+    + findOpenByType(type) : List<Item>
+    + search(...) : List<Item>
+    + updateStatus(id, status) : boolean
+    + update(Item) : boolean
+    + delete(id) : boolean
+    + countByType/Status() : int
+  }
+  class ClaimDAO {
+    + create(Claim) : int
+    + findById(id) : Claim
+    + findByItem(id) : List<Claim>
+    + findPending() : List<Claim>
+    + findByClaimant(id) : List<Claim>
+    + existsActiveClaimByUser(itemId, userId) : boolean
+    + updateStatus(id, status, note) : boolean
+    + countByStatus(status) : int
+  }
+  class MatchDAO {
+    + create(Match) : boolean
+    + findByLostItem(id) : List<Match>
+    + findByFoundItem(id) : List<Match>
+    + findByUser(id) : List<Match>
+    + matchExists(lost, found) : boolean
+  }
+  class AuditLogDAO {
+    + log(actor, action, type, id, note)
+    + findRecent(limit) : List<AuditLog>
+    + findAll() : List<AuditLog>
+  }
+}
+
+package service {
+  class AuthService {
+    + login(email, pwd) : User
+    + register(...) : Result
+  }
+  class UserService {
+    + findAll() : List<User>
+    + setActive(id, active, admin) : boolean
+    + delete(id, admin) : boolean
+  }
+  class ItemService {
+    + reportItem(Item, File) : int
+    + search(...) : List<Item>
+    + deleteItem(id, actor) : boolean
+    + getMatchesForUser(id) : List<Match>
+  }
+  class ClaimService {
+    + submitClaim(Claim) : boolean
+    + approveClaim(id, admin) : boolean
+    + rejectClaim(id, reason, admin) : boolean
+  }
+  class MatchingEngine {
+    + findMatches(Item) : List<Match>
+    - tokenize(text) : Set<String>
+    - countSharedTokens(a, b) : int
+  }
+  class ExportService {
+    + exportUsers(list, file)
+    + exportItems(list, file)
+    + exportClaims(list, file)
+    + exportAuditLog(list, file)
+  }
+  class AuditService {
+    + findRecent(limit) : List<AuditLog>
+    + findAll() : List<AuditLog>
+  }
+}
+
+package util {
+  class SessionManager
+  class SceneNavigator
+  class HashUtil
+  class ImageUtil
+  class ValidationUtil
+  class CsvExporter
+  class Dialogs
+  class Badges
+  class DatabaseManager
+}
+
+package controller {
+  class LoginController
+  class RegisterController
+  class DashboardController
+  class ReportLostController
+  class ReportFoundController
+  class BrowseController
+  class ItemDetailController
+  class ClaimFormController
+  class MyReportsController
+  class AdminDashboardController
+  class AdminClaimsController
+  class AdminReportsController
+  class AdminUsersController
+  class AdminAuditLogController
+}
+
+' DAO -> Model
+UserDAO ..> User
+ItemDAO ..> Item
+ClaimDAO ..> Claim
+MatchDAO ..> Match
+AuditLogDAO ..> AuditLog
+
+' Service -> DAO
+AuthService --> UserDAO
+AuthService --> AuditLogDAO
+UserService --> UserDAO
+ItemService --> ItemDAO
+ItemService --> MatchDAO
+ItemService --> MatchingEngine
+ClaimService --> ClaimDAO
+ClaimService --> ItemDAO
+MatchingEngine --> ItemDAO
+MatchingEngine --> MatchDAO
+ExportService --> CsvExporter
+AuditService --> AuditLogDAO
+
+' DAO -> DatabaseManager
+UserDAO ..> DatabaseManager
+ItemDAO ..> DatabaseManager
+ClaimDAO ..> DatabaseManager
+MatchDAO ..> DatabaseManager
+AuditLogDAO ..> DatabaseManager
+
+' Controller -> Service
+LoginController --> AuthService
+RegisterController --> AuthService
+DashboardController --> ItemService
+DashboardController --> ClaimService
+ReportLostController --> ItemService
+ReportFoundController --> ItemService
+BrowseController --> ItemService
+ItemDetailController --> ItemService
+ItemDetailController --> ClaimService
+ItemDetailController --> UserService
+ClaimFormController --> ClaimService
+ClaimFormController --> ItemService
+MyReportsController --> ItemService
+MyReportsController --> ClaimService
+AdminDashboardController --> UserService
+AdminDashboardController --> ItemService
+AdminDashboardController --> ClaimService
+AdminDashboardController --> AuditService
+AdminClaimsController --> ClaimService
+AdminReportsController --> ItemService
+AdminReportsController --> ExportService
+AdminUsersController --> UserService
+AdminUsersController --> ExportService
+AdminAuditLogController --> AuditService
+AdminAuditLogController --> ExportService
+@enduml
