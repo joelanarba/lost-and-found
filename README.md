@@ -99,14 +99,13 @@ then launches the application at the Login screen.
 
 | Field | Value |
 |-------|-------|
-| Email | `admin@lfms.edu` |
-| Password | `Admin@1234` |
+| Email | `admin@gmail.com` |
+| Password | `12345678` |
 
 This account is seeded automatically on first launch.
 **Note:** change the password after first login in a production setting.
 
-**Demo accounts:** the seeded students all use the password `Password1`, e.g.
-`kofi.mensah@stu.ucc.edu.gh` / `Password1`.
+**Demo accounts:** The seeded students all use the password `Password1`. For example, `joel.amuni@stu.ucc.edu.gh` or `PS/CSC/23/0043` with `Password1`.
 
 ---
 
@@ -196,11 +195,18 @@ Twenty-five manual functional test cases covering every module are documented in
 
 ## Team
 
-| Name | Index / ID | Role |
-|------|------------|------|
-| _Add your name_ | _Index no._ | _e.g. Backend / DAO_ |
-| _Add your name_ | _Index no._ | _e.g. UI / Controllers_ |
-| _Add your name_ | _Index no._ | _e.g. Documentation / Testing_ |
+| Name | Index / ID |
+|------|------------|
+| Sherif Haruna | PS/CSC/23/0131 |
+| Yakubu Abdulai | PS/CSC/23/0050 |
+| Rita Tsotsoo Tetteh | PS/CSC/23/0073 |
+| Egmine James | PS/CSC/23/0163 |
+| Joel Anarba Amuni | PS/CSC/23/0043 |
+| Akudugu Abdul-Latif | PS/CSC/23/0012 |
+| Noamesi Enyonam Elena | PS/CSC/23/0124 |
+| Yakubu Saeed | PS/CSC/23/0100 |
+| Kukekpor Bernice | PS/CSC/23/0060 |
+| Theophilus Botchway | PS/CSC/23/0064 |
 
 > Developed for **INNF101 — Introduction to Computing**.
 
