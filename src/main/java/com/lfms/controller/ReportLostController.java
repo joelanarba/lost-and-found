@@ -1,9 +1,11 @@
 package com.lfms.controller;
 
 import com.lfms.model.Item;
+import com.lfms.model.Match;
 import com.lfms.model.User;
 import com.lfms.service.ItemService;
 import com.lfms.util.Dialogs;
+import com.lfms.util.DuplicateDetector;
 import com.lfms.util.ImageUtil;
 import com.lfms.util.SceneNavigator;
 import com.lfms.util.SessionManager;
@@ -17,6 +19,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -39,15 +42,52 @@ public class ReportLostController {
     @FXML private Label descriptionError;
     @FXML private Label locationError;
     @FXML private Label imageError;
+    @FXML private VBox dupWarnPanel;
+    @FXML private Label dupWarnDetail;
 
     private final ItemService itemService = new ItemService();
     private File selectedImage;
+    private Match duplicateMatch;
 
     @FXML
     public void initialize() {
         sidebarController.setActive("reportlost");
         categoryBox.getItems().setAll(Item.CATEGORIES);
         imageView.setImage(ImageUtil.loadThumbnail(null, 200, 200));
+
+        // Real-time duplicate suggestion as the user types
+        nameField.textProperty().addListener((obs, oldV, newV) -> checkForDuplicate());
+        categoryBox.valueProperty().addListener((obs, oldV, newV) -> checkForDuplicate());
+        descriptionArea.textProperty().addListener((obs, oldV, newV) -> checkForDuplicate());
+    }
+
+    /** Silently previews matches against existing found items and warns on a HIGH match. */
+    private void checkForDuplicate() {
+        LocalDate date = datePicker.getValue();
+        duplicateMatch = DuplicateDetector.firstHighMatch(Item.TYPE_LOST,
+                nameField.getText(), categoryBox.getValue(), descriptionArea.getText(),
+                locationField.getText(), date != null ? date.toString() : null);
+        if (duplicateMatch != null) {
+            dupWarnDetail.setText("Possible match: \"" + duplicateMatch.getFoundItemName()
+                    + "\" — already reported as found.");
+            setVisible(dupWarnPanel, true);
+        } else {
+            setVisible(dupWarnPanel, false);
+        }
+    }
+
+    @FXML
+    private void viewMatch() {
+        if (duplicateMatch == null) {
+            return;
+        }
+        SceneNavigator.openModal("/com/lfms/fxml/ItemDetail.fxml", "Possible Match",
+                DuplicateDetector.counterpartId(duplicateMatch), 1040, 720);
+    }
+
+    private void setVisible(javafx.scene.Node node, boolean visible) {
+        node.setVisible(visible);
+        node.setManaged(visible);
     }
 
     @FXML
@@ -123,5 +163,15 @@ public class ReportLostController {
         selectedImage = null;
         imageView.setImage(ImageUtil.loadThumbnail(null, 200, 200));
         ValidationUtil.clearAllErrors(nameError, categoryError, descriptionError, locationError, imageError);
+        duplicateMatch = null;
+        setVisible(dupWarnPanel, false);
+    }
+
+    @FXML
+    private void openMapSelector() {
+        java.util.function.Consumer<String> callback = coords -> {
+            locationField.setText(coords);
+        };
+        com.lfms.util.SceneNavigator.openModal("/com/lfms/fxml/MapSelector.fxml", "Select Location", callback);
     }
 }

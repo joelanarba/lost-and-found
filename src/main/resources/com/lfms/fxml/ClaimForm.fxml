@@ -48,6 +48,15 @@
                 <TextArea fx:id="proofArea" prefRowCount="4" wrapText="true"/>
                 <Label fx:id="proofError" styleClass="error-label" visible="false" managed="false"/>
 
+                <Label text="Upload a proof image (Optional)" styleClass="form-label"/>
+                <HBox spacing="10.0" alignment="CENTER_LEFT">
+                    <Button text="Choose Image..." styleClass="btn-secondary" onAction="#handleChooseImage"/>
+                    <Label fx:id="imageNameLabel" text="No file selected" styleClass="muted"/>
+                </HBox>
+                <StackPane fx:id="imagePreviewFrame" styleClass="image-frame" visible="false" managed="false" maxWidth="200.0">
+                    <ImageView fx:id="proofImageView" fitWidth="200.0" fitHeight="150.0" preserveRatio="true"/>
+                </StackPane>
+
                 <Label text="Preferred contact method" styleClass="form-label"/>
                 <TextField fx:id="contactField" promptText="e.g. WhatsApp 024 000 0000, or your email"/>
 

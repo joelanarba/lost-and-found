@@ -3,38 +3,51 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.lfms.controller.BrowseController" styleClass="root">
     <fx:include fx:id="sidebar" source="Sidebar.fxml"/>
-    <VBox styleClass="content-area" spacing="16.0" HBox.hgrow="ALWAYS">
-        <Label text="Browse Items" styleClass="page-title"/>
-
-        <HBox styleClass="filter-bar" spacing="10.0" alignment="CENTER_LEFT">
-            <TextField fx:id="searchField" promptText="Search by name or description" HBox.hgrow="ALWAYS"/>
-            <ComboBox fx:id="typeBox"/>
-            <ComboBox fx:id="categoryBox"/>
-            <TextField fx:id="locationField" promptText="Location"/>
-            <Button text="Search" styleClass="btn-primary" onAction="#handleSearch"/>
-            <Button text="Clear" styleClass="btn-secondary" onAction="#handleClear"/>
+    <VBox styleClass="content-area" spacing="18.0" HBox.hgrow="ALWAYS">
+        <HBox alignment="BOTTOM_LEFT" spacing="12.0">
+            <VBox spacing="2.0">
+                <Label text="Browse Items" styleClass="page-title"/>
+                <Label text="Search lost and found reports from across UCC campus." styleClass="page-subtitle"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="resultCountLabel" text="" styleClass="muted"/>
         </HBox>
 
-        <TableView fx:id="table" VBox.vgrow="ALWAYS">
-            <columns>
-                <TableColumn fx:id="imageCol" text="" prefWidth="70.0" sortable="false"/>
-                <TableColumn fx:id="nameCol" text="Name" prefWidth="200.0"/>
-                <TableColumn fx:id="categoryCol" text="Category" prefWidth="130.0"/>
-                <TableColumn fx:id="typeCol" text="Type" prefWidth="90.0"/>
-                <TableColumn fx:id="statusCol" text="Status" prefWidth="120.0"/>
-                <TableColumn fx:id="locationCol" text="Location" prefWidth="160.0"/>
-                <TableColumn fx:id="dateCol" text="Date" prefWidth="110.0"/>
-                <TableColumn fx:id="actionsCol" text="Actions" prefWidth="90.0" sortable="false"/>
-            </columns>
-        </TableView>
+        <VBox styleClass="filter-bar" spacing="10.0">
+            <HBox spacing="10.0" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Search by name or description" HBox.hgrow="ALWAYS"/>
+                <ComboBox fx:id="typeBox"/>
+                <TextField fx:id="locationField" promptText="Location"/>
+                <Button text="Search" styleClass="btn-primary" onAction="#handleSearch"/>
+                <Button text="Clear" styleClass="btn-secondary" onAction="#handleClear"/>
+            </HBox>
+            <ScrollPane vbarPolicy="NEVER" hbarPolicy="NEVER" fitToHeight="true" style="-fx-background-color: transparent;">
+                <HBox fx:id="categoryTags" spacing="8.0" alignment="CENTER_LEFT"/>
+            </ScrollPane>
+        </VBox>
+
+        <StackPane VBox.vgrow="ALWAYS">
+            <ScrollPane fitToWidth="true" styleClass="content-scroll">
+                <FlowPane fx:id="grid" hgap="18.0" vgap="18.0">
+                    <padding>
+                        <Insets top="2.0" right="2.0" bottom="20.0" left="2.0"/>
+                    </padding>
+                </FlowPane>
+            </ScrollPane>
+            <Label fx:id="emptyLabel" text="No items found matching your search."
+                   styleClass="empty-state" visible="false" managed="false"/>
+        </StackPane>
     </VBox>
 </HBox>

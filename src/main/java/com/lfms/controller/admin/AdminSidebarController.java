@@ -1,6 +1,7 @@
 package com.lfms.controller.admin;
 
 import com.lfms.model.User;
+import com.lfms.util.NotificationBell;
 import com.lfms.util.SceneNavigator;
 import com.lfms.util.SessionManager;
 import javafx.fxml.FXML;
@@ -20,8 +21,11 @@ public class AdminSidebarController {
     @FXML private Button btnReports;
     @FXML private Button btnUsers;
     @FXML private Button btnAudit;
+    @FXML private Button btnScanner;
     @FXML private Label userNameLabel;
     @FXML private Label userRoleLabel;
+    @FXML private Button bellButton;
+    @FXML private Label notifBadge;
 
     private Map<String, Button> navButtons;
 
@@ -33,12 +37,14 @@ public class AdminSidebarController {
         navButtons.put("reports", btnReports);
         navButtons.put("users", btnUsers);
         navButtons.put("audit", btnAudit);
+        navButtons.put("scanner", btnScanner);
 
         User user = SessionManager.getInstance().getCurrentUser();
         if (user != null) {
             userNameLabel.setText(user.getName());
             userRoleLabel.setText(user.getRole());
         }
+        NotificationBell.install(bellButton, notifBadge);
     }
 
     public void setActive(String key) {
@@ -80,8 +86,25 @@ public class AdminSidebarController {
     }
 
     @FXML
+    private void goScanner() {
+        SceneNavigator.navigateTo("/com/lfms/fxml/admin/Scanner.fxml");
+    }
+
+    @FXML
+    private void openNotifications() {
+        if (bellButton != null) {
+            bellButton.fire();
+        }
+    }
+
+    @FXML
     private void logout() {
         SessionManager.getInstance().clearSession();
         SceneNavigator.navigateTo("/com/lfms/fxml/Login.fxml");
+    }
+
+    @FXML
+    private void toggleTheme() {
+        SceneNavigator.toggleTheme();
     }
 }

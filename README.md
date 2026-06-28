@@ -1,6 +1,6 @@
-# Lost & Found Management System
+# UCC Lost & Found Management System
 
-> A JavaFX desktop application for managing lost and found items on a university campus.
+> A JavaFX desktop application for managing lost and found items at the University of Cape Coast.
 
 ![Java](https://img.shields.io/badge/Java-17%2B-orange)
 ![JavaFX](https://img.shields.io/badge/JavaFX-21-blue)
@@ -87,9 +87,11 @@ then launches the application at the Login screen.
 > (e.g. `C:\Program Files\Java\jdk-26.0.1`). The SQLite database and uploaded images are
 > created automatically under `data/`.
 
-> **Tip — instant demo:** on the Login screen click **“Load demo data”** to populate the
-> app with sample students, lost/found items (with matches) and a pending claim, so you can
-> explore every feature right away.
+> **Tip — instant demo:** a rich demo dataset is seeded automatically on first launch —
+> 8 students, 33 lost/found items located at real University of Cape Coast landmarks
+> (Sam Jonah Library, Casely-Hayford Hall, Science Lecture Theatre, etc.), each with a
+> generated category image, several matching lost↔found pairs, and a pending claim. You can
+> also re-trigger it with **“Load demo data”** on the Login screen.
 
 ---
 
@@ -103,8 +105,8 @@ then launches the application at the Login screen.
 This account is seeded automatically on first launch.
 **Note:** change the password after first login in a production setting.
 
-**Demo accounts:** “Load demo data” on the Login screen also creates sample students, e.g.
-`kofi@university.edu` / `Password1`.
+**Demo accounts:** the seeded students all use the password `Password1`, e.g.
+`kofi.mensah@stu.ucc.edu.gh` / `Password1`.
 
 ---
 

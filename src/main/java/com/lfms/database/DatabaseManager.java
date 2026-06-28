@@ -1,10 +1,8 @@
 package com.lfms.database;
 
+import com.lfms.util.AppPaths;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -20,11 +18,6 @@ import java.sql.Statement;
  * connection it hands out has foreign-key enforcement enabled.</p>
  */
 public final class DatabaseManager {
-
-    private static final String DATA_DIR   = "data";
-    private static final String IMAGES_DIR = "data/images";
-    private static final String DB_FILE    = "data/lfms.db";
-    private static final String DB_URL     = "jdbc:sqlite:" + DB_FILE;
 
     static {
         // Defensive: modern JDBC auto-registers via ServiceLoader, but this guarantees it.
@@ -43,7 +36,7 @@ public final class DatabaseManager {
      * Callers (DAOs) own the returned connection and must close it (try-with-resources).
      */
     public static Connection getConnection() throws SQLException {
-        Connection conn = DriverManager.getConnection(DB_URL);
+        Connection conn = DriverManager.getConnection(AppPaths.databaseUrl());
         try (Statement st = conn.createStatement()) {
             st.execute("PRAGMA foreign_keys = ON");
         }
@@ -55,17 +48,9 @@ public final class DatabaseManager {
      * Safe to call on every startup.
      */
     public static void initialize() {
-        ensureDirectories();
+        AppPaths.ensureDirectories();
         createSchema();
         seedAdmin();
-    }
-
-    private static void ensureDirectories() {
-        try {
-            Files.createDirectories(Paths.get(IMAGES_DIR)); // also creates the parent data/ dir
-        } catch (IOException e) {
-            throw new RuntimeException("Could not create data directories (" + DATA_DIR + ")", e);
-        }
     }
 
     private static void createSchema() {
@@ -105,6 +90,7 @@ public final class DatabaseManager {
                     claimant_id   INTEGER NOT NULL,
                     features_desc TEXT NOT NULL,
                     proof_desc    TEXT NOT NULL,
+                    proof_image   TEXT,
                     status        TEXT NOT NULL DEFAULT 'PENDING',
                     admin_note    TEXT,
                     created_at    TEXT NOT NULL DEFAULT (datetime('now')),
@@ -134,12 +120,28 @@ public final class DatabaseManager {
                     timestamp   TEXT NOT NULL DEFAULT (datetime('now'))
                 )""";
 
+        final String notifications = """
+                CREATE TABLE IF NOT EXISTS notifications (
+                    notif_id    INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id     INTEGER NOT NULL,
+                    message     TEXT NOT NULL,
+                    is_read     INTEGER NOT NULL DEFAULT 0,
+                    created_at  TEXT NOT NULL DEFAULT (datetime('now')),
+                    FOREIGN KEY (user_id) REFERENCES users(user_id)
+                )""";
+
         try (Connection conn = getConnection(); Statement st = conn.createStatement()) {
             st.execute(users);
             st.execute(items);
             st.execute(claims);
             st.execute(matches);
             st.execute(auditLog);
+            st.execute(notifications);
+            
+            try {
+                st.execute("ALTER TABLE claims ADD COLUMN proof_image TEXT");
+            } catch (SQLException ignored) {
+            }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to create database schema", e);
         }

@@ -2,17 +2,21 @@ package com.lfms.controller;
 
 import com.lfms.model.Claim;
 import com.lfms.model.Item;
+import com.lfms.model.TimelineEvent;
 import com.lfms.model.User;
 import com.lfms.service.ClaimService;
 import com.lfms.service.ItemService;
+import com.lfms.service.TimelineService;
 import com.lfms.service.UserService;
 import com.lfms.util.Badges;
 import com.lfms.util.Dialogs;
 import com.lfms.util.ImageUtil;
+import com.lfms.util.QrCodeUtil;
 import com.lfms.util.SceneNavigator;
 import com.lfms.util.SessionManager;
 import com.lfms.util.ValidationUtil;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
@@ -20,11 +24,22 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -44,16 +59,23 @@ public class ItemDetailController implements SceneNavigator.DataReceiver {
     @FXML private Label dateLabel;
     @FXML private Label reporterLabel;
     @FXML private Button claimButton;
+    @FXML private Button printFlyerButton;
     @FXML private Button editButton;
     @FXML private Button deleteButton;
     @FXML private VBox approvedPanel;
     @FXML private Label finderNameLabel;
     @FXML private Label finderEmailLabel;
     @FXML private Label finderPhoneLabel;
+    @FXML private VBox qrPanel;
+    @FXML private ImageView qrImageView;
+    @FXML private Button saveQrButton;
+    @FXML private VBox timelineBox;
+    @FXML private HBox timelineRows;
 
     private final ItemService itemService = new ItemService();
     private final UserService userService = new UserService();
     private final ClaimService claimService = new ClaimService();
+    private final TimelineService timelineService = new TimelineService();
 
     private int itemId;
     private Item item;
@@ -94,6 +116,8 @@ public class ItemDetailController implements SceneNavigator.DataReceiver {
 
         configureButtons();
         configureApprovedPanel(reporter);
+        configureQr();
+        loadTimeline();
     }
 
     private void configureButtons() {
@@ -102,8 +126,117 @@ public class ItemDetailController implements SceneNavigator.DataReceiver {
         boolean owner = item.getUserId() == uid;
 
         setVisible(claimButton, item.isFound() && item.isOpen() && !owner);
+        setVisible(printFlyerButton, item.isLost());
         setVisible(editButton, owner && item.isOpen());
         setVisible(deleteButton, owner && item.isOpen());
+    }
+
+    /** Found items show a QR code (encoding LFMS-ITEM-{id}); lost items hide the panel. */
+    private void configureQr() {
+        User current = SessionManager.getInstance().getCurrentUser();
+        int uid = current != null ? current.getUserId() : -1;
+        
+        // If this is an approved claim for the current user, show the Claim QR
+        if (item.isFound() && Item.STATUS_APPROVED.equals(item.getStatus())) {
+            for (Claim claim : claimService.findByItem(item.getItemId())) {
+                if (Claim.STATUS_APPROVED.equals(claim.getStatus()) && claim.getClaimantId() == uid) {
+                    Path qr = QrCodeUtil.ensureForClaim(claim.getClaimId());
+                    if (qr != null && Files.exists(qr)) {
+                        qrImageView.setImage(new Image(qr.toUri().toString(), 170, 170, true, true, true));
+                        
+                        // Add Download Certificate Button if it doesn't exist
+                        boolean hasCertBtn = qrPanel.getChildren().stream().anyMatch(n -> n instanceof javafx.scene.control.Button && ((javafx.scene.control.Button)n).getText().equals("Download Certificate"));
+                        if (!hasCertBtn) {
+                            javafx.scene.control.Button certBtn = new javafx.scene.control.Button("Download Certificate");
+                            certBtn.getStyleClass().add("btn-primary");
+                            certBtn.setOnAction(e -> {
+                                Path cert = com.lfms.service.PdfReportService.generateCertificate(claim, item);
+                                if (cert != null) {
+                                    com.lfms.util.Dialogs.info("Certificate Downloaded", "Saved to Desktop: " + cert.getFileName());
+                                }
+                            });
+                            qrPanel.getChildren().add(certBtn);
+                        }
+                        
+                        setVisible(qrPanel, true);
+                        return;
+                    }
+                }
+            }
+        }
+
+        // Otherwise, if it's a found item, show the Item QR
+        if (item.isFound()) {
+            Path qr = QrCodeUtil.ensureForItem(item.getItemId());
+            if (qr != null && Files.exists(qr)) {
+                qrImageView.setImage(new Image(qr.toUri().toString(), 170, 170, true, true, true));
+                setVisible(qrPanel, true);
+                return;
+            }
+        }
+        setVisible(qrPanel, false);
+    }
+
+    @FXML
+    private void saveQrCode() {
+        if (item == null || !item.isFound()) {
+            return;
+        }
+        Path qr = QrCodeUtil.ensureForItem(item.getItemId());
+        if (qr == null || !Files.exists(qr)) {
+            Dialogs.error("QR Code", "The QR code could not be generated.");
+            return;
+        }
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Save QR Code");
+        chooser.setInitialFileName("lfms-item-" + item.getItemId() + "-qr.png");
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG Image", "*.png"));
+        File dest = chooser.showSaveDialog(SceneNavigator.getPrimaryStage());
+        if (dest == null) {
+            return;
+        }
+        try {
+            Files.copy(qr, dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Dialogs.info("Saved", "QR code saved to:\n" + dest.getAbsolutePath());
+        } catch (IOException e) {
+            Dialogs.error("Save Failed", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void printFlyer() {
+        if (item == null || !item.isLost()) {
+            return;
+        }
+        SceneNavigator.openModal("/com/lfms/fxml/Flyer.fxml",
+                "Lost Item Flyer — " + item.getName(), item, 600, 800);
+    }
+
+    private void loadTimeline() {
+        timelineRows.getChildren().clear();
+        List<TimelineEvent> events = timelineService.build(item.getItemId());
+        for (int i = 0; i < events.size(); i++) {
+            timelineRows.getChildren().add(buildTimelineNode(events.get(i)));
+            if (i < events.size() - 1) {
+                Label arrow = new Label("→");
+                arrow.setStyle("-fx-text-fill: #9CA3AF; -fx-font-size: 16px; -fx-padding: 0 10 0 10;");
+                timelineRows.getChildren().add(arrow);
+            }
+        }
+        setVisible(timelineBox, !events.isEmpty());
+    }
+
+    private VBox buildTimelineNode(TimelineEvent event) {
+        Label dot = new Label(event.icon());
+        dot.setStyle("-fx-font-size: 24px;");
+        Label title = new Label(event.title());
+        title.setStyle("-fx-font-weight: bold; -fx-font-size: 13px;");
+        Label date = new Label(event.date());
+        date.setStyle("-fx-text-fill: #6B7280; -fx-font-size: 11px;");
+
+        VBox node = new VBox(4.0, dot, title, date);
+        node.setAlignment(Pos.CENTER);
+        return node;
     }
 
     private void configureApprovedPanel(User reporter) {

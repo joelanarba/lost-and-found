@@ -40,16 +40,25 @@
                                styleClass="empty-state" wrapText="true"/>
 
                         <VBox fx:id="reviewContent" spacing="8.0" visible="false" managed="false">
-                            <HBox spacing="14.0">
-                                <StackPane styleClass="image-frame">
-                                    <ImageView fx:id="reviewImage" fitWidth="150.0" fitHeight="150.0" preserveRatio="true"/>
-                                </StackPane>
-                                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
-                                    <Label fx:id="reviewItemName" styleClass="detail-value" wrapText="true"/>
-                                    <Label text="LOCATION" styleClass="detail-key"/>
-                                    <Label fx:id="reviewItemLocation" styleClass="detail-value" wrapText="true"/>
+                            <HBox spacing="14.0" alignment="TOP_LEFT">
+                                <VBox spacing="4.0" alignment="TOP_CENTER">
+                                    <Label text="Original Item Photo" styleClass="detail-key"/>
+                                    <StackPane styleClass="image-frame">
+                                        <ImageView fx:id="reviewImage" fitWidth="150.0" fitHeight="150.0" preserveRatio="true"/>
+                                    </StackPane>
+                                </VBox>
+                                <VBox spacing="4.0" alignment="TOP_CENTER">
+                                    <Label text="Uploaded Proof Photo" styleClass="detail-key"/>
+                                    <StackPane styleClass="image-frame">
+                                        <ImageView fx:id="proofImageView" fitWidth="150.0" fitHeight="150.0" preserveRatio="true"/>
+                                    </StackPane>
                                 </VBox>
                             </HBox>
+                            <VBox spacing="4.0">
+                                <Label fx:id="reviewItemName" styleClass="detail-value" wrapText="true"/>
+                                <Label text="LOCATION" styleClass="detail-key"/>
+                                <Label fx:id="reviewItemLocation" styleClass="detail-value" wrapText="true"/>
+                            </VBox>
                             <Label text="ITEM DESCRIPTION" styleClass="detail-key"/>
                             <Label fx:id="reviewItemDesc" styleClass="detail-value" wrapText="true"/>
 

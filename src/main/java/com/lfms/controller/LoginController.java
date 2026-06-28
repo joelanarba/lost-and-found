@@ -72,10 +72,12 @@ public class LoginController implements SceneNavigator.DataReceiver {
         try {
             boolean seeded = demoDataService.seedIfEmpty();
             if (seeded) {
-                showSuccess("Demo data loaded. Sign in as  kofi@university.edu / Password1  "
-                        + "(admin: admin@lfms.edu / Admin@1234).");
+                showSuccess("Demo data loaded. Sign in as  " + DemoDataService.DEMO_EMAIL
+                        + " / " + DemoDataService.DEMO_PASSWORD
+                        + "  (admin: admin@lfms.edu / Admin@1234).");
             } else {
-                showSuccess("Demo data is already loaded. Sign in as  kofi@university.edu / Password1.");
+                showSuccess("Demo data is already loaded. Sign in as  "
+                        + DemoDataService.DEMO_EMAIL + " / " + DemoDataService.DEMO_PASSWORD + ".");
             }
         } catch (RuntimeException e) {
             ValidationUtil.showError(errorLabel, "Could not load demo data: " + e.getMessage());

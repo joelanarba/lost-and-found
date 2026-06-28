@@ -1,0 +1,125 @@
+Demo seed photos
+================
+
+Placeholder photos for the auto-generated demo dataset (DemoDataService),
+sourced via the Openverse API (https://openverse.org), which aggregates
+Creative-Commons and public-domain images. Used for educational/demo display
+only; real user reports use uploaded photos. com.lfms.util.SeedImageFactory
+maps each item to one of these files and falls back to a generated icon if a
+file is missing. Credits per image:
+
+laptop.jpg  (query: laptop computer)
+  Man Holding Laptop Computer Typing While Dog Watches
+  "Man Holding Laptop Computer Typing While Dog Watches" by Image Catalog is marked with CC0 1.0. To view the terms, visit https://creativecommons.org/publicdomain/zero/1.0/.
+  https://www.flickr.com/photos/132795455@N08/17783465600
+
+charger.jpg  (query: charger)
+  USB Wall Charger - 5V, 1A (White)
+  "USB Wall Charger - 5V, 1A (White)" by SparkFunElectronics is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.
+  https://www.flickr.com/photos/41898857@N04/32173149186
+
+powerbank.jpg  (query: power bank)
+  Portable power bank
+  "Portable power bank" by Santeri Viinamäki is licensed under CC BY-SA 4.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-sa/4.0/.
+  https://commons.wikimedia.org/w/index.php?curid=54674705
+
+phone.jpg  (query: phone)
+  iPhone
+  "iPhone" by hyku is licensed under CC BY-SA 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-sa/2.0/.
+  https://www.flickr.com/photos/12734746@N00/773211875
+
+earbuds.jpg  (query: wireless earbuds)
+  Fairphone+True+Wireless+Earbuds+with+Charging+Case
+  "Fairphone+True+Wireless+Earbuds+with+Charging+Case" by Fairphone is licensed under CC BY-SA 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-sa/2.0/.
+  https://www.flickr.com/photos/60295192@N08/51548822927
+
+flashdrive.jpg  (query: usb flash drive)
+  USB flash drive (unbranded)
+  "USB flash drive (unbranded)" by Peter Hosey is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.
+  https://www.flickr.com/photos/46546251@N00/2388242386
+
+bottle.jpg  (query: water bottle)
+  water bottle
+  "water bottle" by Muffet is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.
+  https://www.flickr.com/photos/53133240@N00/542497582
+
+glasses.jpg  (query: eyeglasses spectacles)
+  I'm done reading my magazine, I quit. magazine & eyeglasses
+  "I'm done reading my magazine, I quit. magazine & eyeglasses" by photosteve101 is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.
+  https://www.flickr.com/photos/42931449@N07/6092424291
+
+sunglasses.jpg  (query: sunglasses)
+  The Sunglasses
+  "The Sunglasses" by Tobyotter is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.
+  https://www.flickr.com/photos/78428166@N00/7993768362
+
+watch.jpg  (query: wristwatch)
+  russian wristwatch
+  "russian wristwatch" by Kurt:S is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.
+  https://www.flickr.com/photos/28847016@N08/21838850705
+
+bracelet.jpg  (query: bracelet)
+  Halloween bracelet
+  "Halloween bracelet" by lindz graham is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.
+  https://www.flickr.com/photos/12532562@N04/6222751437
+
+idcard.jpg  (query: identity card)
+  UK National Identity Card (Front)
+  "UK National Identity Card (Front)" by ZapTheDingbat is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.
+  https://www.flickr.com/photos/80476901@N00/4500185771
+
+keys.jpg  (query: keys keychain)
+  Keys & keychains hanging
+  "Keys & keychains hanging" is marked with CC0 1.0. To view the terms, visit https://creativecommons.org/publicdomain/zero/1.0/.
+  https://www.rawpixel.com/image/6035988/photo-image-public-domain-free-key
+
+backpack.jpg  (query: backpack)
+  Backpack
+  "Backpack" by slgckgc is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.
+  https://www.flickr.com/photos/14771153@N04/3770457870
+
+calculator.jpg  (query: calculator)
+  Tax Return and Calculator
+  "Tax Return and Calculator" by 401(K) 2013 is licensed under CC BY-SA 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-sa/2.0/.
+  https://www.flickr.com/photos/68751915@N05/6757831463
+
+notebook.jpg  (query: spiral notebook)
+  Spiral notebook paper
+  "Spiral notebook paper" by theilr is licensed under CC BY-SA 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-sa/2.0/.
+  https://www.flickr.com/photos/90863480@N00/300297725
+
+textbook.jpg  (query: textbook)
+  Science textbook learning: do compasses have magnets in them? Yes they do!
+  "Science textbook learning: do compasses have magnets in them? Yes they do!" by Wesley Fryer is licensed under CC BY-SA 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-sa/2.0/.
+  https://www.flickr.com/photos/31442459@N00/2366672288
+
+labcoat.jpg  (query: laboratory coat)
+  Laboratory Coat
+  "Laboratory Coat" by Ronggy is licensed under CC BY-SA 4.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-sa/4.0/.
+  https://commons.wikimedia.org/w/index.php?curid=59665723
+
+hoodie.jpg  (query: hoodie)
+  Hoodie
+  "Hoodie" by jollyUK is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.
+  https://www.flickr.com/photos/18724406@N06/1988440171
+
+cap.jpg  (query: baseball cap)
+  Baseball Caps
+  "Baseball Caps" by Menswear Market is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.
+  https://www.flickr.com/photos/85546319@N04/8442851109
+
+scarf.jpg  (query: scarf)
+  silk scarf
+  "silk scarf" by DU Jenny is licensed under CC BY-SA 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-sa/2.0/.
+  https://www.flickr.com/photos/122102475@N06/13571973965
+
+umbrella.jpg  (query: umbrella)
+  Umbrella
+  "Umbrella" by princedd is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.
+  https://www.flickr.com/photos/34226407@N04/6450761035
+
+wallet.jpg  (query: leather wallet)
+  Leather Wallet
+  "Leather Wallet" by Incase. is licensed under CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.
+  https://www.flickr.com/photos/62021300@N00/11823322314
+

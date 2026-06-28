@@ -18,7 +18,13 @@
     <fx:include fx:id="adminSidebar" source="AdminSidebar.fxml"/>
     <ScrollPane fitToWidth="true" styleClass="content-scroll" HBox.hgrow="ALWAYS">
         <VBox styleClass="content-area" spacing="20.0">
-            <Label text="Admin Dashboard" styleClass="page-title"/>
+            <HBox alignment="CENTER_LEFT" spacing="20.0">
+                <Label text="Admin Dashboard" styleClass="page-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <javafx.scene.control.Button mnemonicParsing="false" text="PDF Report" styleClass="btn-primary" onAction="#exportPdfReport"/>
+                <javafx.scene.control.Button mnemonicParsing="false" text="Archive Stale Items" styleClass="btn-danger" onAction="#archiveStaleItems"/>
+                <javafx.scene.control.Button mnemonicParsing="false" text="Generate Demo Data" styleClass="btn-primary" onAction="#generateDemoData"/>
+            </HBox>
 
             <FlowPane hgap="16.0" vgap="16.0">
                 <VBox styleClass="stat-card">
@@ -41,6 +47,18 @@
                     <Label fx:id="resolvedLabel" text="0" styleClass="stat-number"/>
                     <Label text="Resolved Items" styleClass="stat-label"/>
                 </VBox>
+                <VBox styleClass="stat-card, stat-card-gold">
+                    <Label fx:id="recoveryRateLabel" text="0.0%" styleClass="stat-number"/>
+                    <Label text="Recovery Rate" styleClass="stat-label"/>
+                </VBox>
+                <VBox styleClass="stat-card">
+                    <Label text="Top Lost Category" styleClass="stat-label"/>
+                    <Label fx:id="topCategoryLabel" text="—" styleClass="stat-value-sub"/>
+                </VBox>
+                <VBox styleClass="stat-card">
+                    <Label text="Avg Claim Time" styleClass="stat-label"/>
+                    <Label fx:id="averageClaimTimeLabel" text="—" styleClass="stat-value-sub"/>
+                </VBox>
             </FlowPane>
 
             <HBox spacing="20.0">
@@ -56,6 +74,13 @@
                             <NumberAxis fx:id="barY"/>
                         </yAxis>
                     </BarChart>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="20.0">
+                <VBox styleClass="chart-card" HBox.hgrow="ALWAYS">
+                    <Label text="Campus Heatmap (Top Loss Locations)" styleClass="section-title"/>
+                    <javafx.scene.web.WebView fx:id="heatmapWeb" prefHeight="300.0"/>
                 </VBox>
             </HBox>
 

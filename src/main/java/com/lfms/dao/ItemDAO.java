@@ -2,6 +2,7 @@ package com.lfms.dao;
 
 import com.lfms.database.DatabaseManager;
 import com.lfms.model.Item;
+import com.lfms.model.LabelCount;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -144,6 +145,17 @@ public class ItemDAO {
         }
     }
 
+    public int archiveStaleItems(int daysOld) {
+        String sql = "UPDATE items SET status = 'ARCHIVED' WHERE status = 'OPEN' AND date(created_at) <= date('now', ?)";
+        try (Connection c = DatabaseManager.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, "-" + daysOld + " days");
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("ItemDAO.archiveStaleItems failed", e);
+        }
+    }
+
     public boolean update(Item item) {
         String sql = "UPDATE items SET name = ?, category = ?, description = ?, location = ?, "
                 + "image_path = ?, date_reported = ? WHERE item_id = ?";
@@ -179,6 +191,50 @@ public class ItemDAO {
 
     public int countByStatus(String status) {
         return count("SELECT COUNT(*) FROM items WHERE status = ?", status);
+    }
+
+    /** Total number of items in the system. */
+    public int countAll() {
+        try (Connection c = DatabaseManager.getConnection();
+             PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) FROM items");
+             ResultSet rs = ps.executeQuery()) {
+            rs.next();
+            return rs.getInt(1);
+        } catch (SQLException e) {
+            throw new RuntimeException("ItemDAO.countAll failed", e);
+        }
+    }
+
+    /** The single most-reported LOST category and its count, or {@code null} if there are none. */
+    public LabelCount topLostCategory() {
+        String sql = "SELECT category, COUNT(*) AS count FROM items "
+                + "WHERE type = 'LOST' AND category IS NOT NULL AND category != '' "
+                + "GROUP BY category ORDER BY count DESC LIMIT 1";
+        List<LabelCount> rows = labelCounts(sql);
+        return rows.isEmpty() ? null : rows.get(0);
+    }
+
+    /** The {@code limit} locations with the most LOST reports, ranked by count (desc). */
+    public List<LabelCount> topLostLocations(int limit) {
+        String sql = "SELECT location, COUNT(*) AS count FROM items "
+                + "WHERE type = 'LOST' AND location IS NOT NULL AND location != '' "
+                + "GROUP BY location ORDER BY count DESC LIMIT " + limit;
+        return labelCounts(sql);
+    }
+
+    /** Runs a {@code SELECT label, count} aggregate and maps each row to a {@link LabelCount}. */
+    private List<LabelCount> labelCounts(String sql) {
+        try (Connection c = DatabaseManager.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            List<LabelCount> rows = new ArrayList<>();
+            while (rs.next()) {
+                rows.add(new LabelCount(rs.getString(1), rs.getInt(2)));
+            }
+            return rows;
+        } catch (SQLException e) {
+            throw new RuntimeException("ItemDAO aggregate failed: " + sql, e);
+        }
     }
 
     /** Items created within the last {@code months} months (newest first) — chart data. */

@@ -17,6 +17,7 @@ public class ClaimService {
     private final ClaimDAO claimDAO = new ClaimDAO();
     private final ItemDAO itemDAO = new ItemDAO();
     private final AuditLogDAO auditDAO = new AuditLogDAO();
+    private final NotificationService notificationService = new NotificationService();
 
     /**
      * Submits a claim: persists it, moves the item to CLAIM_PENDING and logs the action.
@@ -47,6 +48,9 @@ public class ClaimService {
             rejectOtherPendingClaims(claim.getItemId(), claimId, adminId);
             auditDAO.log(adminId, "APPROVE_CLAIM", "CLAIM", claimId,
                     "Claim approved for item " + claim.getItemId());
+            notificationService.notify(claim.getClaimantId(),
+                    "Your claim on \"" + claim.getItemName()
+                            + "\" was approved. Contact the finder to arrange collection.");
         }
         return ok;
     }
@@ -67,6 +71,8 @@ public class ClaimService {
             }
             auditDAO.log(adminId, "REJECT_CLAIM", "CLAIM", claimId,
                     "Claim rejected for item " + claim.getItemId() + ": " + reason);
+            notificationService.notify(claim.getClaimantId(),
+                    "Your claim on \"" + claim.getItemName() + "\" was rejected — reason: " + reason + ".");
         }
         return ok;
     }
@@ -93,6 +99,14 @@ public class ClaimService {
         return claimDAO.countByStatus(status);
     }
 
+    public double averageClaimTimeHours() {
+        return claimDAO.averageClaimTimeHours();
+    }
+
+    public int countSuccessfulReturns(int userId) {
+        return claimDAO.countSuccessfulReturns(userId);
+    }
+
     public boolean hasPendingClaim(int itemId, int userId) {
         return claimDAO.existsActiveClaimByUser(itemId, userId);
     }
@@ -116,6 +130,9 @@ public class ClaimService {
                         "Another claim was approved for this item.");
                 auditDAO.log(adminId, "REJECT_CLAIM", "CLAIM", other.getClaimId(),
                         "Auto-rejected: another claim approved for item " + itemId);
+                notificationService.notify(other.getClaimantId(),
+                        "Your claim on \"" + other.getItemName()
+                                + "\" was not approved — another claim was approved for this item.");
             }
         }
     }

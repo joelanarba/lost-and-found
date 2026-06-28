@@ -5,42 +5,39 @@ import com.lfms.service.ItemService;
 import com.lfms.util.Badges;
 import com.lfms.util.ImageUtil;
 import com.lfms.util.SceneNavigator;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Browse / search screen listing lost and found items with filters.
+ * Browse / search screen. Lost and found items are shown as a responsive grid of image
+ * cards rather than a dense table, so the listing reads like a marketplace.
  */
 public class BrowseController {
 
     @FXML private SidebarController sidebarController;
     @FXML private TextField searchField;
     @FXML private ComboBox<String> typeBox;
-    @FXML private ComboBox<String> categoryBox;
+    @FXML private HBox categoryTags;
     @FXML private TextField locationField;
-    @FXML private TableView<Item> table;
-    @FXML private TableColumn<Item, Item> imageCol;
-    @FXML private TableColumn<Item, String> nameCol;
-    @FXML private TableColumn<Item, String> categoryCol;
-    @FXML private TableColumn<Item, String> typeCol;
-    @FXML private TableColumn<Item, String> statusCol;
-    @FXML private TableColumn<Item, String> locationCol;
-    @FXML private TableColumn<Item, String> dateCol;
-    @FXML private TableColumn<Item, Void> actionsCol;
+    @FXML private FlowPane grid;
+    @FXML private Label emptyLabel;
+    @FXML private Label resultCountLabel;
 
     private final ItemService itemService = new ItemService();
+    private String activeCategory = "All";
 
     @FXML
     public void initialize() {
@@ -49,66 +46,29 @@ public class BrowseController {
         typeBox.getItems().setAll("All", "Lost Items", "Found Items");
         typeBox.setValue("All");
 
-        List<String> categories = new ArrayList<>();
-        categories.add("All");
-        categories.addAll(Item.CATEGORIES);
-        categoryBox.getItems().setAll(categories);
-        categoryBox.setValue("All");
-
-        configureColumns();
-        Label placeholder = new Label("No items found matching your search.");
-        placeholder.getStyleClass().add("table-placeholder-text");
-        table.setPlaceholder(placeholder);
-
+        buildCategoryTags();
         doSearch();
     }
 
-    private void configureColumns() {
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        categoryCol.setCellValueFactory(new PropertyValueFactory<>("category"));
-        locationCol.setCellValueFactory(new PropertyValueFactory<>("location"));
-        dateCol.setCellValueFactory(new PropertyValueFactory<>("dateReported"));
+    private void buildCategoryTags() {
+        categoryTags.getChildren().clear();
+        List<String> categories = new ArrayList<>();
+        categories.add("All");
+        categories.addAll(Item.CATEGORIES);
 
-        typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
-        typeCol.setCellFactory(Badges.badgeCellFactory());
-        statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
-        statusCol.setCellFactory(Badges.badgeCellFactory());
-
-        imageCol.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue()));
-        imageCol.setCellFactory(col -> new TableCell<>() {
-            private final ImageView view = new ImageView();
-            {
-                view.setFitWidth(48);
-                view.setFitHeight(48);
-                view.setPreserveRatio(true);
+        for (String cat : categories) {
+            javafx.scene.control.ToggleButton btn = new javafx.scene.control.ToggleButton(cat);
+            btn.getStyleClass().add("tag-pill");
+            if (cat.equals(activeCategory)) {
+                btn.setSelected(true);
             }
-            @Override
-            protected void updateItem(Item item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setGraphic(null);
-                } else {
-                    view.setImage(ImageUtil.loadThumbnail(item.getImagePath(), 48, 48));
-                    setGraphic(view);
-                }
-            }
-        });
-
-        actionsCol.setCellFactory(col -> new TableCell<>() {
-            private final Button viewButton = new Button("View");
-            {
-                viewButton.getStyleClass().add("btn-secondary");
-                viewButton.setOnAction(e -> {
-                    Item item = getTableView().getItems().get(getIndex());
-                    SceneNavigator.navigateTo("/com/lfms/fxml/ItemDetail.fxml", item.getItemId());
-                });
-            }
-            @Override
-            protected void updateItem(Void value, boolean empty) {
-                super.updateItem(value, empty);
-                setGraphic(empty ? null : viewButton);
-            }
-        });
+            btn.setOnAction(e -> {
+                activeCategory = cat;
+                buildCategoryTags(); // refresh styles
+                doSearch();
+            });
+            categoryTags.getChildren().add(btn);
+        }
     }
 
     @FXML
@@ -121,16 +81,75 @@ public class BrowseController {
         searchField.clear();
         locationField.clear();
         typeBox.setValue("All");
-        categoryBox.setValue("All");
+        activeCategory = "All";
+        buildCategoryTags();
         doSearch();
     }
 
     private void doSearch() {
         String type = mapType(typeBox.getValue());
-        String category = "All".equals(categoryBox.getValue()) ? null : categoryBox.getValue();
+        String category = "All".equals(activeCategory) ? null : activeCategory;
         List<Item> items = itemService.search(searchField.getText(), type, category,
                 locationField.getText(), null, null);
-        table.getItems().setAll(items);
+
+        grid.getChildren().clear();
+        for (Item item : items) {
+            grid.getChildren().add(buildCard(item));
+        }
+
+        boolean empty = items.isEmpty();
+        emptyLabel.setVisible(empty);
+        emptyLabel.setManaged(empty);
+        resultCountLabel.setText(items.size() + (items.size() == 1 ? " item" : " items"));
+    }
+
+    private Node buildCard(Item item) {
+        VBox card = new VBox();
+        card.getStyleClass().add("item-card");
+
+        // --- Image header with a type badge overlaid ---
+        ImageView image = new ImageView(ImageUtil.loadThumbnail(item.getImagePath(), 240, 150));
+        image.setFitWidth(240);
+        image.setFitHeight(150);
+        image.setPreserveRatio(false);
+        image.setSmooth(true);
+        Rectangle clip = new Rectangle(240, 150);
+        clip.setArcWidth(28);
+        clip.setArcHeight(28);
+        image.setClip(clip);
+
+        Label typeBadge = Badges.label(item.getType());
+        StackPane.setAlignment(typeBadge, Pos.TOP_LEFT);
+        StackPane.setMargin(typeBadge, new javafx.geometry.Insets(10));
+
+        StackPane imageWrap = new StackPane(image, typeBadge);
+        imageWrap.getStyleClass().add("item-card-image-wrap");
+
+        // --- Body ---
+        Label title = new Label(item.getName());
+        title.getStyleClass().add("item-card-title");
+        title.setWrapText(true);
+        title.setMaxWidth(210);
+
+        Label status = Badges.label(item.getStatus());
+
+        Label location = new Label("📍  " + safe(item.getLocation()));
+        location.getStyleClass().add("item-card-loc");
+
+        Label date = new Label("Reported " + safe(item.getDateReported()));
+        date.getStyleClass().add("item-card-meta");
+
+        VBox body = new VBox(8.0, title, new HBox(status), location, date);
+        body.getStyleClass().add("item-card-body");
+
+        card.getChildren().addAll(imageWrap, body);
+        card.setOnMouseClicked(e ->
+                SceneNavigator.navigateTo("/com/lfms/fxml/ItemDetail.fxml", item.getItemId()));
+        return card;
+    }
+
+    private String safe(String value) {
+        return (value == null || value.isBlank()) ? "—" : value;
     }
 
     private String mapType(String label) {

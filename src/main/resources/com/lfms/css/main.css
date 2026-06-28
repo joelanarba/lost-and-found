@@ -1,130 +1,416 @@
-.root { -fx-font-family: "Segoe UI", Arial, sans-serif; -fx-background-color: #F5F5F5; }
+/* =====================================================================
+   UCC Lost & Found — Design System
+   University of Cape Coast brand: deep navy + gold, on cool neutrals.
+   Custom looked-up colours are declared on .root and reused below.
+   ===================================================================== */
 
-/* Sidebar */
-.sidebar { -fx-background-color: #1F4E79; -fx-min-width: 220px; -fx-pref-width: 220px; }
-.sidebar-btn { -fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 14px;
-               -fx-alignment: CENTER_LEFT; -fx-padding: 12 20; -fx-cursor: hand; -fx-pref-width: 220; }
-.sidebar-btn:hover  { -fx-background-color: #2E75B6; }
-.sidebar-btn.active { -fx-background-color: #2E75B6; -fx-font-weight: bold; }
-.sidebar-title      { -fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold; -fx-padding: 24 20 8 20; }
-.sidebar-user       { -fx-text-fill: #BDD7EE; -fx-font-size: 12px; -fx-padding: 4 20; }
-.sidebar-divider    { -fx-border-color: #2E75B6; -fx-border-width: 0 0 1 0; -fx-padding: 4 0; }
-.sidebar-role       { -fx-background-color: #2E75B6; -fx-text-fill: white; -fx-font-size: 10px;
-                      -fx-background-radius: 10; -fx-padding: 2 10; }
+.root {
+    -fx-font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
 
-/* Buttons */
-.btn-primary { -fx-background-color: #2E75B6; -fx-text-fill: white; -fx-font-weight: bold;
-               -fx-padding: 10 24; -fx-background-radius: 6; -fx-cursor: hand; -fx-font-size: 13px; }
-.btn-primary:hover { -fx-background-color: #1F4E79; }
-.btn-danger  { -fx-background-color: #C0392B; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6; -fx-cursor: hand; }
-.btn-danger:hover  { -fx-background-color: #962d22; }
-.btn-success { -fx-background-color: #27AE60; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 6; -fx-cursor: hand; }
-.btn-success:hover { -fx-background-color: #1e8449; }
-.btn-secondary { -fx-background-color: #ECF0F1; -fx-text-fill: #333; -fx-padding: 8 16; -fx-background-radius: 6; -fx-cursor: hand; }
-.btn-secondary:hover { -fx-background-color: #D5D8DC; }
-.btn-link { -fx-background-color: transparent; -fx-text-fill: #2E75B6; -fx-cursor: hand; -fx-padding: 4 8; -fx-underline: false; }
+    /* Brand palette */
+    brand-navy:        #1E3A5F;   /* primary — top bar, titles, sidebar base */
+    sidebar-deep:      #0F2440;   /* deep navy — sidebar */
+    brand-blue:        #2E75B6;   /* secondary — primary action */
+    brand-blue-dark:   #245E92;   /* secondary hover */
+    brand-blue-soft:   #E4EFF9;   /* secondary tint — info, selection */
+    gold:              #C9972C;   /* accent */
+    gold-dark:         #AC7F1F;   /* accent hover */
+    gold-light:        #FEF3C7;   /* badge background */
+    gold-text:         #92400E;   /* text on gold-light */
+
+    /* Neutrals */
+    app-bg:            #F8FAFC;
+    surface:           #FFFFFF;
+    surface-2:         #F1F5F9;
+    navy-tint:         #ECF1F7;   /* light navy tint — table headers */
+    ink:               #16202B;
+    ink-soft:          #5C6B7A;
+    ink-faint:         #93A1AF;
+    hairline:          #E2E8F0;
+
+    /* Semantic */
+    ok:                #22C55E;
+    ok-soft:           #DCFCE7;
+    ok-text:           #15803D;
+    warn:              #F59E0B;
+    warn-soft:         #FEF3C7;
+    warn-text:         #92400E;
+    danger:            #EF4444;
+    danger-soft:       #FEE2E2;
+    danger-text:       #B91C1C;
+
+    -fx-background-color: app-bg;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+/* ---------------------------------------------------------------------
+   Sidebar navigation — deep navy with gold active items
+   --------------------------------------------------------------------- */
+.sidebar {
+    -fx-background-color: linear-gradient(to bottom, brand-navy, sidebar-deep);
+    -fx-min-width: 240px;
+    -fx-pref-width: 240px;
+    -fx-padding: 0 0 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 16, 0, 2, 0);
+}
+.brand-box      { -fx-padding: 26 20 18 22; }
+.sidebar-title  { -fx-text-fill: white; -fx-font-size: 19px; -fx-font-weight: bold; }
+.sidebar-sub    { -fx-text-fill: gold; -fx-font-size: 11px; -fx-font-weight: bold; }
+.brand-motto    { -fx-text-fill: #9FB6CE; -fx-font-size: 10px; -fx-font-style: italic; }
+
+.sidebar-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #C9D6E3;
+    -fx-font-size: 13.5px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-graphic-text-gap: 12;
+    -fx-padding: 12 22;
+    -fx-cursor: hand;
+    -fx-pref-width: 240;
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 0 3;
+}
+.sidebar-btn:hover  { -fx-background-color: rgba(255,255,255,0.06); -fx-text-fill: white; }
+.sidebar-btn.active {
+    -fx-background-color: gold;          /* #C9972C */
+    -fx-text-fill: white;                /* white text on gold, per brand spec */
+    -fx-font-weight: bold;
+    -fx-border-color: transparent;
+}
+.sidebar-btn.active:hover { -fx-background-color: gold-dark; -fx-text-fill: white; }
+.sidebar-divider { -fx-padding: 4 18; }
+.sidebar-divider .line { -fx-border-color: rgba(255,255,255,0.12); }
+.sidebar-user    { -fx-text-fill: #DCE6F0; -fx-font-size: 12.5px; -fx-font-weight: bold; -fx-padding: 4 22 0 22; }
+.sidebar-role    {
+    -fx-background-color: gold; -fx-text-fill: brand-navy; -fx-font-size: 9.5px; -fx-font-weight: bold;
+    -fx-background-radius: 10; -fx-padding: 2 10; -fx-translate-x: 22;
+}
+
+/* ---------------------------------------------------------------------
+   Buttons — 7px radius, hover darkens + subtle glow
+   --------------------------------------------------------------------- */
+.btn-primary {
+    -fx-background-color: brand-blue; -fx-text-fill: white; -fx-font-weight: bold;
+    -fx-padding: 10 24; -fx-background-radius: 7; -fx-cursor: hand; -fx-font-size: 13px;
+    -fx-effect: dropshadow(gaussian, rgba(46,117,182,0.28), 8, 0, 0, 2);
+}
+.btn-primary:hover  {
+    -fx-background-color: brand-blue-dark;
+    -fx-effect: dropshadow(gaussian, rgba(46,117,182,0.55), 14, 0, 0, 3);
+}
+.btn-accent {
+    -fx-background-color: gold; -fx-text-fill: brand-navy; -fx-font-weight: bold;
+    -fx-padding: 10 24; -fx-background-radius: 7; -fx-cursor: hand; -fx-font-size: 13px;
+    -fx-effect: dropshadow(gaussian, rgba(201,151,44,0.30), 8, 0, 0, 2);
+}
+.btn-accent:hover   {
+    -fx-background-color: gold-dark;
+    -fx-effect: dropshadow(gaussian, rgba(201,151,44,0.55), 14, 0, 0, 3);
+}
+.btn-danger  { -fx-background-color: danger; -fx-text-fill: white; -fx-font-weight: bold;
+               -fx-padding: 9 18; -fx-background-radius: 7; -fx-cursor: hand; }
+.btn-danger:hover  { -fx-background-color: #DC2626;
+               -fx-effect: dropshadow(gaussian, rgba(239,68,68,0.50), 12, 0, 0, 2); }
+.btn-success { -fx-background-color: ok; -fx-text-fill: white; -fx-font-weight: bold;
+               -fx-padding: 9 18; -fx-background-radius: 7; -fx-cursor: hand; }
+.btn-success:hover { -fx-background-color: #16A34A;
+               -fx-effect: dropshadow(gaussian, rgba(34,197,94,0.50), 12, 0, 0, 2); }
+.btn-secondary {
+    -fx-background-color: surface; -fx-text-fill: #2C3A47; -fx-font-weight: bold;
+    -fx-padding: 9 18; -fx-background-radius: 7; -fx-cursor: hand; -fx-font-size: 12.5px;
+    -fx-border-color: hairline; -fx-border-radius: 7; -fx-border-width: 1;
+}
+.btn-secondary:hover { -fx-background-color: surface-2; -fx-border-color: #C2D2E2; }
+.btn-link { -fx-background-color: transparent; -fx-text-fill: brand-blue; -fx-cursor: hand; -fx-padding: 4 8; }
 .btn-link:hover { -fx-underline: true; }
 
-/* Cards */
-.card { -fx-background-color: white; -fx-background-radius: 8;
-        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 8, 0, 0, 2); -fx-padding: 24; }
-.stat-card { -fx-background-color: white; -fx-background-radius: 8;
-             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 2); -fx-padding: 20; -fx-min-width: 150; }
-.stat-number { -fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: #1F4E79; }
-.stat-label  { -fx-font-size: 12px; -fx-text-fill: #888888; }
-.stat-card-warning .stat-number { -fx-text-fill: #CA6F1E; }
+/* ---------------------------------------------------------------------
+   Cards & surfaces — white, soft shadow, 10px radius
+   --------------------------------------------------------------------- */
+.card {
+    -fx-background-color: surface; -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(30,58,95,0.08), 16, 0, 0, 4); -fx-padding: 26;
+}
+.stat-card {
+    -fx-background-color: surface; -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(30,58,95,0.07), 12, 0, 0, 3);
+    -fx-padding: 20 22; -fx-min-width: 170;
+    -fx-border-color: transparent transparent transparent brand-blue;
+    -fx-border-width: 0 0 0 4; -fx-border-radius: 4;
+}
+.stat-card-warning  { -fx-border-color: transparent transparent transparent gold; }
+.stat-card-found    { -fx-border-color: transparent transparent transparent ok; }
+.stat-number { -fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: brand-navy; }
+.stat-label  { -fx-font-size: 12px; -fx-text-fill: ink-soft; -fx-font-weight: bold; }
+.stat-icon   { -fx-font-size: 20px; }
+.stat-card-warning .stat-number { -fx-text-fill: gold; }   /* pending claims in gold */
+.stat-card-found .stat-number   { -fx-text-fill: ok; }
+.stat-card-gold    { -fx-border-color: transparent transparent transparent gold; }
+.stat-card-gold .stat-number    { -fx-text-fill: gold; }   /* recovery rate in UCC gold #C9972C */
 
-/* Status & confidence badges */
-.badge-lost     { -fx-background-color: #FADBD8; -fx-text-fill: #C0392B; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 11px; }
-.badge-found    { -fx-background-color: #D5F5E3; -fx-text-fill: #1E8449; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 11px; }
-.badge-open     { -fx-background-color: #D6EAF8; -fx-text-fill: #1F4E79; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 11px; }
-.badge-pending  { -fx-background-color: #FDEBD0; -fx-text-fill: #CA6F1E; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 11px; }
-.badge-approved { -fx-background-color: #D5F5E3; -fx-text-fill: #1E8449; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 11px; }
-.badge-rejected { -fx-background-color: #FADBD8; -fx-text-fill: #C0392B; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 11px; }
-.badge-resolved { -fx-background-color: #EBF5FB; -fx-text-fill: #2E75B6; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 11px; }
-.badge-high     { -fx-background-color: #D5F5E3; -fx-text-fill: #1E8449; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 11px; }
-.badge-medium   { -fx-background-color: #FDEBD0; -fx-text-fill: #CA6F1E; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 11px; }
-.badge-low      { -fx-background-color: #F2F3F4; -fx-text-fill: #717D7E; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 11px; }
-.badge-neutral  { -fx-background-color: #EAEDED; -fx-text-fill: #566573; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 11px; }
+/* Small insight card (most-lost-category) — gold left accent */
+.insight-card {
+    -fx-background-color: surface; -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(30,58,95,0.07), 12, 0, 0, 3);
+    -fx-padding: 16 22; -fx-min-width: 220;
+    -fx-border-color: transparent transparent transparent gold; -fx-border-width: 0 0 0 4; -fx-border-radius: 4;
+}
+.insight-title { -fx-font-size: 11px; -fx-text-fill: ink-soft; -fx-font-weight: bold; }
+.insight-value { -fx-font-size: 19px; -fx-font-weight: bold; -fx-text-fill: brand-navy; }
 
-/* Forms */
-.text-field, .text-area, .combo-box, .date-picker {
-    -fx-border-color: #D0D0D0; -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 8; -fx-font-size: 13px; }
-.text-field:focused, .text-area:focused { -fx-border-color: #2E75B6; -fx-border-width: 2; }
-.error-label { -fx-text-fill: #C0392B; -fx-font-size: 11px; -fx-padding: 2 0 0 2; }
-.form-label  { -fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #333333; }
-.form-hint   { -fx-font-size: 11px; -fx-text-fill: #999999; -fx-font-style: italic; }
-.field-error { -fx-border-color: #C0392B; -fx-border-width: 2; }
+/* ---------------------------------------------------------------------
+   Status / type / confidence badges — coloured pills
+   --------------------------------------------------------------------- */
+.badge-lost, .badge-found, .badge-open, .badge-pending, .badge-approved,
+.badge-rejected, .badge-resolved, .badge-high, .badge-medium, .badge-low, .badge-neutral {
+    -fx-background-radius: 20; -fx-padding: 3 11; -fx-font-size: 10.5px; -fx-font-weight: bold;
+}
+.badge-lost     { -fx-background-color: danger-soft; -fx-text-fill: danger-text; }
+.badge-found    { -fx-background-color: ok-soft;     -fx-text-fill: ok-text; }
+.badge-open     { -fx-background-color: brand-blue-soft; -fx-text-fill: brand-blue-dark; }
+.badge-pending  { -fx-background-color: gold-light;  -fx-text-fill: gold-text; }
+.badge-approved { -fx-background-color: ok-soft;     -fx-text-fill: ok-text; }
+.badge-rejected { -fx-background-color: danger-soft; -fx-text-fill: danger-text; }
+.badge-resolved { -fx-background-color: navy-tint;   -fx-text-fill: brand-navy; }
+.badge-high     { -fx-background-color: ok-soft;     -fx-text-fill: ok-text; }
+.badge-medium   { -fx-background-color: gold-light;  -fx-text-fill: gold-text; }
+.badge-low      { -fx-background-color: #EDF0F3;     -fx-text-fill: #6B7885; }
+.badge-neutral  { -fx-background-color: #EAEDED;     -fx-text-fill: #566573; }
 
-/* Auth screens */
-.auth-root  { -fx-background-color: #1F4E79; }
-.auth-card  { -fx-background-color: white; -fx-background-radius: 12; -fx-padding: 40;
-              -fx-min-width: 420; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 20, 0, 0, 6); }
-.auth-title { -fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #1F4E79; }
-.auth-sub   { -fx-font-size: 13px; -fx-text-fill: #888888; }
-.link-label { -fx-text-fill: #2E75B6; -fx-cursor: hand; -fx-font-size: 12px; }
+/* ---------------------------------------------------------------------
+   Forms — 7px radius, brand-blue focus
+   --------------------------------------------------------------------- */
+.text-field, .text-area, .combo-box, .date-picker, .password-field {
+    -fx-background-color: surface; -fx-border-color: #D4DEE8; -fx-border-radius: 7;
+    -fx-background-radius: 7; -fx-padding: 9 12; -fx-font-size: 13px; -fx-text-fill: ink;
+    -fx-prompt-text-fill: ink-faint;
+}
+.text-area .content { -fx-background-radius: 7; }
+.text-field:focused, .text-area:focused, .password-field:focused,
+.combo-box:focused, .date-picker:focused {
+    -fx-border-color: brand-blue; -fx-border-width: 1.6;
+    -fx-effect: dropshadow(gaussian, rgba(46,117,182,0.20), 6, 0, 0, 0);
+}
+.error-label { -fx-text-fill: danger; -fx-font-size: 11px; -fx-padding: 2 0 0 2; }
+.form-label  { -fx-font-weight: bold; -fx-font-size: 12.5px; -fx-text-fill: #34434F; }
+.form-hint   { -fx-font-size: 11px; -fx-text-fill: ink-faint; -fx-font-style: italic; }
+.field-error { -fx-border-color: danger; -fx-border-width: 1.6; }
+.combo-box .list-cell { -fx-text-fill: ink; -fx-padding: 4 10; }
+
+/* ---------------------------------------------------------------------
+   Auth screens — dark navy gradient, centered floating white card
+   --------------------------------------------------------------------- */
+.auth-root  { -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, brand-navy, sidebar-deep); }
+.brand-panel {
+    -fx-background-color: transparent;
+    -fx-padding: 56 48; -fx-min-width: 380; -fx-pref-width: 420;
+}
+.brand-logo     { -fx-text-fill: gold; -fx-font-size: 13px; -fx-font-weight: bold; }
+.brand-name     { -fx-text-fill: white; -fx-font-size: 40px; -fx-font-weight: bold; }
+.brand-tag      { -fx-text-fill: #BFD0E2; -fx-font-size: 15px; }
+.brand-motto-lg { -fx-text-fill: gold; -fx-font-size: 13px; -fx-font-style: italic; }
+.brand-bullet   { -fx-text-fill: #D6E2EE; -fx-font-size: 13px; }
+
+.auth-card  {
+    -fx-background-color: surface; -fx-background-radius: 16; -fx-padding: 40;
+    -fx-effect: dropshadow(gaussian, rgba(8,20,40,0.45), 36, 0, 0, 14);
+}
+.auth-title { -fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: brand-navy; }
+.auth-sub   { -fx-font-size: 13px; -fx-text-fill: ink-soft; }
+.link-label { -fx-text-fill: brand-blue; -fx-cursor: hand; -fx-font-size: 12px; -fx-font-weight: bold; }
 .link-label:hover { -fx-underline: true; }
 
-/* Tables */
-.table-view { -fx-background-color: white; -fx-border-color: #EEEEEE; -fx-border-radius: 6; }
-.table-view .column-header-background { -fx-background-color: #EAF2FB; }
-.table-view .column-header .label { -fx-font-weight: bold; -fx-text-fill: #1F4E79; }
-.table-row-cell:odd { -fx-background-color: #F9FBFD; }
-.table-row-cell:selected { -fx-background-color: #D6EAF8; }
-.table-row-cell:hover { -fx-background-color: #EBF5FB; }
-.table-placeholder-text { -fx-text-fill: #999999; -fx-font-style: italic; }
+/* ---------------------------------------------------------------------
+   Tables — light navy header tint, alternating rows, hover highlight
+   --------------------------------------------------------------------- */
+.table-view { -fx-background-color: surface; -fx-background-radius: 10; -fx-border-color: transparent;
+              -fx-padding: 4; -fx-effect: dropshadow(gaussian, rgba(30,58,95,0.07), 10, 0, 0, 3); }
+.table-view .column-header-background { -fx-background-color: navy-tint; -fx-background-radius: 10 10 0 0; -fx-padding: 2 0; }
+.table-view .column-header { -fx-background-color: transparent; -fx-border-color: transparent transparent #D8E2EE transparent; }
+.table-view .column-header .label { -fx-font-weight: bold; -fx-text-fill: brand-navy; -fx-font-size: 11.5px; }
+.table-view .table-cell { -fx-text-fill: ink; -fx-alignment: CENTER_LEFT; -fx-padding: 8 10; -fx-font-size: 12.5px; }
+.table-row-cell { -fx-background-color: surface; -fx-border-color: transparent transparent #EEF2F7 transparent; -fx-cell-size: 46px; }
+.table-row-cell:odd { -fx-background-color: #F4F7FB; }
+.table-row-cell:selected { -fx-background-color: brand-blue-soft; }
+.table-row-cell:selected .table-cell { -fx-text-fill: ink; }
+.table-row-cell:hover { -fx-background-color: #EAF1FA; }
+.table-placeholder-text { -fx-text-fill: ink-faint; -fx-font-style: italic; }
 
-/* Page titles */
-.page-title { -fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1F4E79; }
-.section-title { -fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #2E75B6; }
+/* ---------------------------------------------------------------------
+   Titles & text helpers
+   --------------------------------------------------------------------- */
+.page-title    { -fx-font-size: 25px; -fx-font-weight: bold; -fx-text-fill: brand-navy; }
+.section-title { -fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #2C3A47; }
+.page-subtitle { -fx-font-size: 13px; -fx-text-fill: ink-soft; }
+.muted        { -fx-text-fill: ink-soft; -fx-font-size: 12px; }
+.detail-key   { -fx-text-fill: ink-faint; -fx-font-size: 11px; -fx-font-weight: bold; }
+.detail-value { -fx-text-fill: ink; -fx-font-size: 14px; }
+.description-text { -fx-text-fill: #41505D; -fx-font-size: 13px; }
+.empty-state  { -fx-text-fill: ink-faint; -fx-font-size: 14px; -fx-font-style: italic; }
 
 /* Charts */
-.chart { -fx-background-color: white; -fx-background-radius: 8; -fx-padding: 16; }
-.chart-title { -fx-font-weight: bold; -fx-text-fill: #1F4E79; }
+.chart, .chart-card { -fx-background-color: surface; -fx-background-radius: 10; -fx-padding: 18;
+         -fx-effect: dropshadow(gaussian, rgba(30,58,95,0.07), 12, 0, 0, 3); }
+.chart-title { -fx-font-weight: bold; -fx-text-fill: brand-navy; }
 
-/* ----------------------------------------------------------------------
-   Additional component styles used by the screens (consistent palette)
-   ---------------------------------------------------------------------- */
-
-/* Main content region beside the sidebar */
-.content-area { -fx-background-color: #F5F5F5; -fx-padding: 28; }
+/* ---------------------------------------------------------------------
+   Content layout
+   --------------------------------------------------------------------- */
+.content-area { -fx-background-color: app-bg; -fx-padding: 30 34; }
 .content-scroll { -fx-background-color: transparent; }
 .content-scroll > .viewport { -fx-background-color: transparent; }
+.scroll-bar:vertical .thumb, .scroll-bar:horizontal .thumb {
+    -fx-background-color: #C3CFDB; -fx-background-radius: 8;
+}
+.scroll-bar { -fx-background-color: transparent; }
 
-/* Generic text helpers */
-.muted        { -fx-text-fill: #888888; -fx-font-size: 12px; }
-.detail-key   { -fx-text-fill: #888888; -fx-font-size: 12px; -fx-font-weight: bold; }
-.detail-value { -fx-text-fill: #333333; -fx-font-size: 14px; }
-.description-text { -fx-text-fill: #444444; -fx-font-size: 13px; }
-.page-subtitle { -fx-font-size: 13px; -fx-text-fill: #888888; }
+/* ---------------------------------------------------------------------
+   Information panels
+   --------------------------------------------------------------------- */
+.success-panel { -fx-background-color: ok-soft; -fx-background-radius: 10; -fx-padding: 18;
+                 -fx-border-color: #A7E3C0; -fx-border-radius: 10; -fx-border-width: 1; }
+.success-panel-title { -fx-text-fill: ok-text; -fx-font-weight: bold; -fx-font-size: 15px; }
+.warn-panel  { -fx-background-color: warn-soft; -fx-background-radius: 10; -fx-padding: 18;
+               -fx-border-color: #F3D88A; -fx-border-radius: 10; -fx-border-width: 1; }
+.warn-panel-title { -fx-text-fill: warn-text; -fx-font-weight: bold; -fx-font-size: 15px; }
+.info-panel  { -fx-background-color: brand-blue-soft; -fx-background-radius: 10; -fx-padding: 16; }
 
-/* Empty-state message */
-.empty-state { -fx-text-fill: #9AA4AF; -fx-font-size: 14px; -fx-font-style: italic; }
+/* ---------------------------------------------------------------------
+   Match suggestion card (dashboard)
+   --------------------------------------------------------------------- */
+.match-card { -fx-background-color: surface; -fx-background-radius: 10; -fx-padding: 18;
+              -fx-effect: dropshadow(gaussian, rgba(30,58,95,0.08), 12, 0, 0, 3); -fx-min-width: 280;
+              -fx-max-width: 320;
+              -fx-border-color: hairline; -fx-border-radius: 10; -fx-border-width: 1; }
+.match-arrow { -fx-text-fill: brand-blue; -fx-font-size: 14px; -fx-font-weight: bold; }
 
-/* Coloured information panels */
-.success-panel { -fx-background-color: #D5F5E3; -fx-background-radius: 8; -fx-padding: 18;
-                 -fx-border-color: #27AE60; -fx-border-radius: 8; -fx-border-width: 1; }
-.success-panel-title { -fx-text-fill: #1E8449; -fx-font-weight: bold; -fx-font-size: 15px; }
-.warn-panel  { -fx-background-color: #FDEBD0; -fx-background-radius: 8; -fx-padding: 18;
-               -fx-border-color: #E0A458; -fx-border-radius: 8; -fx-border-width: 1; }
-.warn-panel-title { -fx-text-fill: #CA6F1E; -fx-font-weight: bold; -fx-font-size: 15px; }
-.info-panel  { -fx-background-color: #EAF2FB; -fx-background-radius: 8; -fx-padding: 16; }
-
-/* Match suggestion card */
-.match-card { -fx-background-color: white; -fx-background-radius: 8; -fx-padding: 16;
-              -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 2); -fx-min-width: 260; }
-.match-arrow { -fx-text-fill: #2E75B6; -fx-font-size: 16px; -fx-font-weight: bold; }
+/* "Why this matched" breakdown panel — green check lines */
+.breakdown-panel {
+    -fx-background-color: ok-soft; -fx-background-radius: 8; -fx-padding: 10 12;
+    -fx-border-color: #A7E3C0; -fx-border-radius: 8; -fx-border-width: 1;
+}
+.breakdown-title  { -fx-text-fill: ok-text; -fx-font-weight: bold; -fx-font-size: 12px; }
+.breakdown-reason { -fx-text-fill: ok-text; -fx-font-size: 12px; }
 
 /* Review / detail panels (admin) */
-.review-panel { -fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20;
-                -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 2); }
-.image-frame { -fx-border-color: #E0E0E0; -fx-border-radius: 6; -fx-background-color: #FAFAFA;
-               -fx-background-radius: 6; -fx-padding: 6; }
+.review-panel { -fx-background-color: surface; -fx-background-radius: 10; -fx-padding: 22;
+                -fx-effect: dropshadow(gaussian, rgba(30,58,95,0.07), 12, 0, 0, 3); }
+.image-frame { -fx-border-color: hairline; -fx-border-radius: 10; -fx-background-color: surface-2;
+               -fx-background-radius: 10; -fx-padding: 8; }
 
 /* Filter bar */
-.filter-bar { -fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;
-              -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 4, 0, 0, 1); }
+.filter-bar { -fx-background-color: surface; -fx-background-radius: 10; -fx-padding: 14 16;
+              -fx-effect: dropshadow(gaussian, rgba(30,58,95,0.06), 10, 0, 0, 3); }
 
-/* TabPane tweaks */
+/* ---------------------------------------------------------------------
+   Item card grid (Browse)
+   --------------------------------------------------------------------- */
+.item-card {
+    -fx-background-color: surface; -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(30,58,95,0.08), 12, 0, 0, 4);
+    -fx-min-width: 240; -fx-max-width: 240; -fx-cursor: hand;
+    -fx-border-color: hairline; -fx-border-radius: 10; -fx-border-width: 1;
+}
+.item-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(30,58,95,0.20), 18, 0, 0, 8);
+    -fx-border-color: #B6CCE4;
+}
+.item-card-image-wrap {
+    -fx-background-color: surface-2; -fx-background-radius: 10 10 0 0; -fx-min-height: 150; -fx-max-height: 150;
+}
+.item-card-body  { -fx-padding: 14 16 16 16; }
+.item-card-title { -fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: ink; }
+.item-card-meta  { -fx-font-size: 11.5px; -fx-text-fill: ink-soft; -fx-graphic-text-gap: 6; }
+.item-card-loc   { -fx-font-size: 11.5px; -fx-text-fill: brand-blue; -fx-font-weight: bold; }
+
+/* ---------------------------------------------------------------------
+   TabPane
+   --------------------------------------------------------------------- */
 .tab-pane .tab-header-background { -fx-background-color: transparent; }
-.tab-pane .tab:selected .tab-label { -fx-text-fill: #1F4E79; -fx-font-weight: bold; }
+.tab-pane .tab-header-area { -fx-padding: 0 0 6 0; }
+.tab-pane .tab { -fx-background-color: transparent; -fx-padding: 8 18; -fx-background-radius: 7 7 0 0; }
+.tab-pane .tab .tab-label { -fx-text-fill: ink-soft; -fx-font-size: 13px; }
+.tab-pane .tab:selected { -fx-background-color: surface; }
+.tab-pane .tab:selected .tab-label { -fx-text-fill: brand-navy; -fx-font-weight: bold; }
+.tab-pane > .tab-header-area > .headers-region > .tab:selected .focus-indicator { -fx-border-color: transparent; }
+
+/* ---------------------------------------------------------------------
+   Notification bell + dropdown
+   --------------------------------------------------------------------- */
+.bell-btn {
+    -fx-background-color: transparent; -fx-font-size: 17px; -fx-padding: 3 6;
+    -fx-cursor: hand; -fx-background-radius: 8;
+}
+.bell-btn:hover { -fx-background-color: rgba(255,255,255,0.12); }
+.notif-badge {
+    -fx-background-color: danger; -fx-text-fill: white; -fx-font-size: 9.5px; -fx-font-weight: bold;
+    -fx-background-radius: 10; -fx-min-width: 17; -fx-min-height: 17; -fx-alignment: center;
+    -fx-padding: 1 4; -fx-translate-x: 7; -fx-translate-y: -7;
+    -fx-border-color: sidebar-deep; -fx-border-radius: 10; -fx-border-width: 1.5;
+}
+
+/* The dropdown lives in a detached Popup outside .root, so re-declare the palette it uses. */
+.notif-popup {
+    surface: #FFFFFF; brand-navy: #1E3A5F; ink: #16202B; ink-faint: #93A1AF;
+    hairline: #E2E8F0; brand-blue-soft: #E4EFF9;
+    -fx-background-color: surface; -fx-background-radius: 12; -fx-padding: 14 4 6 4;
+    -fx-min-width: 344; -fx-pref-width: 344;
+    -fx-effect: dropshadow(gaussian, rgba(8,20,40,0.30), 24, 0, 0, 8);
+    -fx-border-color: hairline; -fx-border-radius: 12; -fx-border-width: 1;
+}
+.notif-popup-title { -fx-text-fill: brand-navy; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 0 12 8 12; }
+.notif-scroll { -fx-background-color: transparent; }
+.notif-scroll > .viewport { -fx-background-color: transparent; }
+.notif-row {
+    -fx-padding: 9 14; -fx-border-color: transparent transparent hairline transparent; -fx-border-width: 0 0 1 0;
+}
+.notif-unread { -fx-background-color: brand-blue-soft; }
+.notif-msg  { -fx-text-fill: ink; -fx-font-size: 12.5px; }
+.notif-time { -fx-text-fill: ink-faint; -fx-font-size: 10.5px; }
+.notif-empty { -fx-text-fill: ink-faint; -fx-font-style: italic; -fx-font-size: 12.5px; -fx-padding: 16 14; }
+
+/* ---------------------------------------------------------------------
+   QR panel (item detail — found items)
+   --------------------------------------------------------------------- */
+.qr-panel   { -fx-padding: 4 0 0 0; }
+.qr-caption { -fx-text-fill: ink-soft; -fx-font-size: 12px; -fx-font-weight: bold; }
+
+/* ---------------------------------------------------------------------
+   Item history timeline (item detail)
+   --------------------------------------------------------------------- */
+.timeline-row {
+    -fx-padding: 9 4; -fx-border-color: transparent transparent hairline transparent; -fx-border-width: 0 0 1 0;
+}
+.timeline-dot   { -fx-font-size: 13px; }
+.timeline-title { -fx-text-fill: ink; -fx-font-size: 13px; -fx-font-weight: bold; }
+.timeline-date  { -fx-text-fill: ink-faint; -fx-font-size: 12px; }
+
+/* ---------------------------------------------------------------------
+   Lost-item flyer (printable poster window) — UCC navy + gold noticeboard
+   --------------------------------------------------------------------- */
+.flyer-window { -fx-background-color: app-bg; }
+.flyer-scroll { -fx-background-color: transparent; -fx-padding: 16; }
+.flyer-scroll > .viewport { -fx-background-color: transparent; }
+.flyer-poster {
+    -fx-background-color: surface; -fx-background-radius: 6; -fx-padding: 28 34 34 34;
+    -fx-border-color: brand-navy; -fx-border-width: 6; -fx-border-radius: 6;
+}
+.flyer-brand     { -fx-text-fill: brand-navy; -fx-font-size: 15px; -fx-font-weight: bold; }
+.flyer-brand-sub { -fx-text-fill: gold; -fx-font-size: 11px; -fx-font-weight: bold; }
+.flyer-heading   { -fx-text-fill: danger; -fx-font-size: 46px; -fx-font-weight: bold; -fx-padding: 4 0 2 0; }
+.flyer-image-frame {
+    -fx-background-color: surface-2; -fx-background-radius: 8; -fx-padding: 10;
+    -fx-border-color: gold; -fx-border-width: 2; -fx-border-radius: 8;
+}
+.flyer-name    { -fx-text-fill: brand-navy; -fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 4 0; }
+.flyer-details { -fx-padding: 6 0 0 0; -fx-max-width: 470; }
+.flyer-key     { -fx-text-fill: ink-soft; -fx-font-weight: bold; -fx-font-size: 13px; -fx-min-width: 78; }
+.flyer-val     { -fx-text-fill: ink; -fx-font-size: 13px; }
+.flyer-contact { -fx-background-color: brand-navy; -fx-background-radius: 8; -fx-padding: 16 22; -fx-max-width: 480; }
+.flyer-contact-title { -fx-text-fill: gold; -fx-font-size: 13px; -fx-font-weight: bold; }
+.flyer-contact-info  { -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; }
+.flyer-actions {
+    -fx-background-color: surface; -fx-padding: 14;
+    -fx-border-color: hairline transparent transparent transparent; -fx-border-width: 1 0 0 0;
+}

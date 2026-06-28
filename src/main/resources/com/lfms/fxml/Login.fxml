@@ -4,34 +4,75 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.Group?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.transform.Scale?>
 
-<StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-           fx:controller="com.lfms.controller.LoginController" styleClass="auth-root">
-    <VBox styleClass="auth-card" spacing="6.0" maxWidth="420.0" maxHeight="-Infinity">
-        <Label text="Lost &amp; Found" styleClass="auth-title"/>
-        <Label text="Sign in to your account" styleClass="auth-sub"/>
-        <Label fx:id="successLabel" style="-fx-text-fill:#1E8449; -fx-font-size:12px;" wrapText="true"
-               visible="false" managed="false"/>
-        <Region prefHeight="14.0"/>
-        <Label text="Email" styleClass="form-label"/>
-        <TextField fx:id="emailField" promptText="you@university.edu"/>
-        <Region prefHeight="8.0"/>
-        <Label text="Password" styleClass="form-label"/>
-        <PasswordField fx:id="passwordField" promptText="Your password" onAction="#handleLogin"/>
-        <Label fx:id="errorLabel" styleClass="error-label" wrapText="true" visible="false" managed="false"/>
-        <Region prefHeight="16.0"/>
-        <Button text="Login" styleClass="btn-primary" onAction="#handleLogin" maxWidth="Infinity"/>
-        <Region prefHeight="10.0"/>
-        <HBox spacing="5.0" alignment="CENTER">
-            <Label text="Don't have an account?" styleClass="auth-sub"/>
-            <Label text="Register" styleClass="link-label" onMouseClicked="#goToRegister"/>
+<HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.lfms.controller.LoginController" styleClass="auth-root">
+
+    <!-- Brand panel -->
+    <VBox styleClass="brand-panel" spacing="14.0">
+        <HBox spacing="14.0" alignment="CENTER_LEFT">
+            <Pane prefWidth="48.0" prefHeight="48.0" minWidth="48.0" minHeight="48.0" maxWidth="48.0" maxHeight="48.0">
+                <Rectangle width="48.0" height="48.0" arcWidth="24.0" arcHeight="24.0" fill="#1E3A5F"/>
+                <Group layoutX="18.0" layoutY="18.0" opacity="0.7">
+                    <SVGPath content="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" stroke="#FFFFFF" strokeWidth="2.0" fill="transparent" strokeLineCap="ROUND" strokeLineJoin="ROUND"/>
+                    <SVGPath content="M3.3 7l8.7 5 8.7-5" stroke="#FFFFFF" strokeWidth="2.0" fill="transparent" strokeLineCap="ROUND" strokeLineJoin="ROUND"/>
+                    <SVGPath content="M12 22V12" stroke="#FFFFFF" strokeWidth="2.0" fill="transparent" strokeLineCap="ROUND" strokeLineJoin="ROUND"/>
+                </Group>
+                <Group layoutX="10.0" layoutY="10.0">
+                    <Circle centerX="11.0" centerY="11.0" radius="8.0" fill="transparent" stroke="#FFFFFF" strokeWidth="2.0"/>
+                    <SVGPath content="M21 21l-4.3-4.3" stroke="#FFFFFF" strokeWidth="2.0" fill="transparent" strokeLineCap="ROUND" strokeLineJoin="ROUND"/>
+                </Group>
+            </Pane>
+            <VBox spacing="4.0" alignment="CENTER_LEFT">
+                <Label text="LFMS" style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+                <Label text="UNIVERSITY OF CAPE COAST" styleClass="brand-logo"/>
+            </VBox>
         </HBox>
-        <HBox alignment="CENTER">
-            <Label text="First time here? Load demo data" styleClass="link-label" onMouseClicked="#loadDemoData"/>
-        </HBox>
+        <Region VBox.vgrow="ALWAYS"/>
+        <Label text="Lost &amp; Found" styleClass="brand-name"/>
+        <Label text="Reuniting the UCC community with what matters." styleClass="brand-tag" wrapText="true"/>
+        <Region prefHeight="18.0"/>
+        <Label text="•  Report a lost or found item in seconds" styleClass="brand-bullet"/>
+        <Label text="•  Smart matching suggests likely pairs" styleClass="brand-bullet"/>
+        <Label text="•  Claim and recover items securely" styleClass="brand-bullet"/>
+        <Region VBox.vgrow="ALWAYS"/>
+        <Label text="“Veritas Nobis Lumen” — Truth, our light" styleClass="brand-motto-lg" wrapText="true"/>
     </VBox>
-</StackPane>
+
+    <!-- Form panel -->
+    <StackPane HBox.hgrow="ALWAYS">
+        <VBox styleClass="auth-card" spacing="6.0" maxWidth="400.0" maxHeight="-Infinity">
+            <Label text="Welcome back" styleClass="auth-title"/>
+            <Label text="Sign in to your account" styleClass="auth-sub"/>
+            <Label fx:id="successLabel" style="-fx-text-fill:#15803D; -fx-font-size:12px;" wrapText="true"
+                   visible="false" managed="false"/>
+            <Region prefHeight="16.0"/>
+            <Label text="Email" styleClass="form-label"/>
+            <TextField fx:id="emailField" promptText="you@stu.ucc.edu.gh"/>
+            <Region prefHeight="8.0"/>
+            <Label text="Password" styleClass="form-label"/>
+            <PasswordField fx:id="passwordField" promptText="Your password" onAction="#handleLogin"/>
+            <Label fx:id="errorLabel" styleClass="error-label" wrapText="true" visible="false" managed="false"/>
+            <Region prefHeight="18.0"/>
+            <Button text="Sign In" styleClass="btn-primary" onAction="#handleLogin" maxWidth="Infinity"/>
+            <Region prefHeight="12.0"/>
+            <HBox spacing="5.0" alignment="CENTER">
+                <Label text="Don't have an account?" styleClass="auth-sub"/>
+                <Label text="Register" styleClass="link-label" onMouseClicked="#goToRegister"/>
+            </HBox>
+            <HBox alignment="CENTER">
+                <Label text="First time here? Load demo data" styleClass="link-label" onMouseClicked="#loadDemoData"/>
+            </HBox>
+        </VBox>
+    </StackPane>
+</HBox>

@@ -19,7 +19,7 @@ import java.util.List;
 public class ClaimDAO {
 
     private static final String BASE_SELECT =
-            "SELECT c.claim_id, c.item_id, c.claimant_id, c.features_desc, c.proof_desc, "
+            "SELECT c.claim_id, c.item_id, c.claimant_id, c.features_desc, c.proof_desc, c.proof_image, "
                     + "c.status, c.admin_note, c.created_at, "
                     + "i.name AS item_name, "
                     + "cl.name AS claimant_name, cl.index_no AS claimant_index, "
@@ -31,15 +31,16 @@ public class ClaimDAO {
                     + "JOIN users rp ON i.user_id = rp.user_id ";
 
     public int create(Claim claim) {
-        String sql = "INSERT INTO claims (item_id, claimant_id, features_desc, proof_desc, status) "
-                + "VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO claims (item_id, claimant_id, features_desc, proof_desc, proof_image, status) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection c = DatabaseManager.getConnection();
              PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, claim.getItemId());
             ps.setInt(2, claim.getClaimantId());
             ps.setString(3, claim.getFeaturesDesc());
             ps.setString(4, claim.getProofDesc());
-            ps.setString(5, claim.getStatus() == null ? Claim.STATUS_PENDING : claim.getStatus());
+            ps.setString(5, claim.getProofImage());
+            ps.setString(6, claim.getStatus() == null ? Claim.STATUS_PENDING : claim.getStatus());
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) {
@@ -127,6 +128,23 @@ public class ClaimDAO {
         }
     }
 
+    /** Returns the average time (in hours) between an item being reported and a claim for it being APPROVED. */
+    public double averageClaimTimeHours() {
+        String sql = "SELECT AVG((julianday(c.created_at) - julianday(i.created_at)) * 24.0) "
+                   + "FROM claims c JOIN items i ON c.item_id = i.item_id "
+                   + "WHERE c.status = 'APPROVED'";
+        try (Connection c = DatabaseManager.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("ClaimDAO.averageClaimTimeHours failed", e);
+        }
+        return 0.0;
+    }
+
     /** Deletes all claims belonging to an item (used when an item is removed). */
     public int deleteByItem(int itemId) {
         String sql = "DELETE FROM claims WHERE item_id = ?";
@@ -137,6 +155,21 @@ public class ClaimDAO {
         } catch (SQLException e) {
             throw new RuntimeException("ClaimDAO.deleteByItem failed", e);
         }
+    }
+
+    public int countSuccessfulReturns(int userId) {
+        String sql = "SELECT count(*) FROM claims c JOIN items i ON c.item_id = i.item_id "
+                   + "WHERE i.user_id = ? AND c.status = 'APPROVED'";
+        try (Connection c = DatabaseManager.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("ClaimDAO.countSuccessfulReturns failed", e);
+        }
+        return 0;
     }
 
     // ---- helpers ----
@@ -168,6 +201,7 @@ public class ClaimDAO {
                 rs.getInt("claimant_id"),
                 rs.getString("features_desc"),
                 rs.getString("proof_desc"),
+                rs.getString("proof_image"),
                 rs.getString("status"),
                 rs.getString("admin_note"),
                 rs.getString("created_at"));

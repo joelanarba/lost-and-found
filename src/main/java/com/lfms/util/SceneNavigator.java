@@ -1,9 +1,11 @@
 package com.lfms.util;
 
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -66,18 +68,38 @@ public class SceneNavigator {
     }
 
     public static void openModal(String fxmlPath, String title, Object data) {
+        openModal(fxmlPath, title, data, -1, -1);
+    }
+
+    /**
+     * Opens a modal window for the given view. When {@code width}/{@code height} are positive the
+     * scene is created at that size; otherwise it sizes to its content.
+     */
+    public static void openModal(String fxmlPath, String title, Object data, double width, double height) {
         try {
             FXMLLoader loader = new FXMLLoader(resource(fxmlPath));
             Parent root = loader.load();
             passData(loader, data);
 
+            // Clamp requested size to the visual screen area so the window never opens off-screen.
+            Rectangle2D screen = Screen.getPrimary().getVisualBounds();
+            double w = width  > 0 ? Math.min(width,  screen.getWidth()  * 0.90) : -1;
+            double h = height > 0 ? Math.min(height, screen.getHeight() * 0.88) : -1;
+
             Stage modal = new Stage();
             modal.initOwner(primaryStage);
             modal.initModality(Modality.WINDOW_MODAL);
             modal.setTitle(title);
-            Scene scene = new Scene(root);
+            modal.setResizable(true);
+            Scene scene = w > 0 && h > 0 ? new Scene(root, w, h) : new Scene(root);
             applyStyles(scene);
             modal.setScene(scene);
+
+            // Center within the visual screen area (respects taskbar position).
+            if (w > 0 && h > 0) {
+                modal.setX(screen.getMinX() + (screen.getWidth()  - w) / 2);
+                modal.setY(screen.getMinY() + (screen.getHeight() - h) / 2);
+            }
             modal.showAndWait();
         } catch (IOException e) {
             throw new RuntimeException("Failed to open modal: " + fxmlPath, e);
@@ -94,10 +116,27 @@ public class SceneNavigator {
         }
     }
 
+    private static boolean darkModeEnabled = false;
+
+    public static void toggleTheme() {
+        darkModeEnabled = !darkModeEnabled;
+        Scene scene = primaryStage.getScene();
+        if (scene != null) {
+            scene.getStylesheets().clear();
+            applyStyles(scene);
+        }
+    }
+
     private static void applyStyles(Scene scene) {
         URL css = SceneNavigator.class.getResource(STYLESHEET);
         if (css != null) {
             scene.getStylesheets().add(css.toExternalForm());
+        }
+        if (darkModeEnabled) {
+            URL darkCss = SceneNavigator.class.getResource("/com/lfms/css/dark-theme.css");
+            if (darkCss != null) {
+                scene.getStylesheets().add(darkCss.toExternalForm());
+            }
         }
     }
 

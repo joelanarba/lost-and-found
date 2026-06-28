@@ -39,8 +39,11 @@
                         <Label fx:id="descriptionError" styleClass="error-label" visible="false" managed="false"/>
 
                         <Label text="Location Found *" styleClass="form-label"/>
-                        <TextField fx:id="locationField"
-                                   promptText="Enter general area only, e.g. Main Library. Do not enter specific room."/>
+                        <HBox spacing="10">
+                            <TextField fx:id="locationField"
+                                       promptText="General area only, e.g. Sam Jonah Library. Do not enter specific room." HBox.hgrow="ALWAYS"/>
+                            <Button text="Map" onAction="#openMapSelector" styleClass="btn-secondary"/>
+                        </HBox>
                         <Label text="Enter the general area only — keep specific details private to verify claims."
                                styleClass="form-hint"/>
                         <Label fx:id="locationError" styleClass="error-label" visible="false" managed="false"/>
@@ -58,6 +61,15 @@
                         <Label fx:id="imageError" styleClass="error-label" visible="false" managed="false"/>
                     </VBox>
                 </HBox>
+
+                <VBox fx:id="dupWarnPanel" styleClass="warn-panel" spacing="8.0"
+                      visible="false" managed="false">
+                    <Label text="⚠  Before you submit — we found a possible match already in the system!"
+                           styleClass="warn-panel-title" wrapText="true"/>
+                    <Label fx:id="dupWarnDetail" styleClass="detail-value" wrapText="true"/>
+                    <Button fx:id="dupViewButton" text="View Match" styleClass="btn-secondary"
+                            onAction="#viewMatch"/>
+                </VBox>
 
                 <Region prefHeight="6.0"/>
                 <HBox spacing="10.0">

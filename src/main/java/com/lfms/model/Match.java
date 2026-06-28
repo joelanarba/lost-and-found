@@ -19,6 +19,9 @@ public class Match {
     private String lostItemName;
     private String foundItemName;
 
+    // Structured explanation produced by the matching engine (not persisted)
+    private MatchBreakdown breakdown;
+
     public Match() {
     }
 
@@ -94,6 +97,14 @@ public class Match {
 
     public void setFoundItemName(String foundItemName) {
         this.foundItemName = foundItemName;
+    }
+
+    public MatchBreakdown getBreakdown() {
+        return breakdown;
+    }
+
+    public void setBreakdown(MatchBreakdown breakdown) {
+        this.breakdown = breakdown;
     }
 
     @Override

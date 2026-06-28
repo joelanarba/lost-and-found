@@ -16,17 +16,32 @@
             <Label fx:id="welcomeLabel" text="Welcome back" styleClass="page-subtitle"/>
 
             <HBox spacing="18.0">
-                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                <VBox styleClass="stat-card" spacing="2.0" HBox.hgrow="ALWAYS" onMouseClicked="#goToBrowseLost" style="-fx-cursor: hand;">
+                    <Label text="📢" styleClass="stat-icon"/>
                     <Label fx:id="openLostLabel" text="0" styleClass="stat-number"/>
-                    <Label text="Open Lost Reports" styleClass="stat-label"/>
+                    <Label text="OPEN LOST REPORTS" styleClass="stat-label"/>
                 </VBox>
-                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                <VBox styleClass="stat-card, stat-card-found" spacing="2.0" HBox.hgrow="ALWAYS" onMouseClicked="#goToBrowseFound" style="-fx-cursor: hand;">
+                    <Label text="✅" styleClass="stat-icon"/>
                     <Label fx:id="openFoundLabel" text="0" styleClass="stat-number"/>
-                    <Label text="Open Found Reports" styleClass="stat-label"/>
+                    <Label text="OPEN FOUND REPORTS" styleClass="stat-label"/>
                 </VBox>
-                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                <VBox styleClass="stat-card, stat-card-warning" spacing="2.0" HBox.hgrow="ALWAYS" onMouseClicked="#goToMyClaims" style="-fx-cursor: hand;">
+                    <Label text="🕓" styleClass="stat-icon"/>
                     <Label fx:id="pendingClaimsLabel" text="0" styleClass="stat-number"/>
-                    <Label text="My Pending Claims" styleClass="stat-label"/>
+                    <Label text="MY PENDING CLAIMS" styleClass="stat-label"/>
+                </VBox>
+                <VBox styleClass="stat-card, stat-card-gold" spacing="2.0" HBox.hgrow="ALWAYS">
+                    <Label text="🎯" styleClass="stat-icon"/>
+                    <Label fx:id="recoveryRateLabel" text="0.0%" styleClass="stat-number"/>
+                    <Label text="RECOVERY RATE" styleClass="stat-label"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="18.0">
+                <VBox styleClass="insight-card" spacing="3.0">
+                    <Label text="📊  MOST LOST CATEGORY" styleClass="insight-title"/>
+                    <Label fx:id="topCategoryLabel" text="—" styleClass="insight-value"/>
                 </VBox>
             </HBox>
 

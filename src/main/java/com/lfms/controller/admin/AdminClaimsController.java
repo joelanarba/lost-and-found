@@ -37,6 +37,7 @@ public class AdminClaimsController {
     @FXML private Label reviewPlaceholder;
     @FXML private VBox reviewContent;
     @FXML private ImageView reviewImage;
+    @FXML private ImageView proofImageView;
     @FXML private Label reviewItemName;
     @FXML private Label reviewItemLocation;
     @FXML private Label reviewItemDesc;
@@ -88,10 +89,11 @@ public class AdminClaimsController {
         reasonField.clear();
 
         Item item = itemService.findById(claim.getItemId());
-        reviewImage.setImage(ImageUtil.loadThumbnail(item != null ? item.getImagePath() : null, 150, 150));
-        reviewItemName.setText(item != null ? item.getName() : claim.getItemName());
-        reviewItemLocation.setText(item != null && item.getLocation() != null ? item.getLocation() : "Not specified");
-        reviewItemDesc.setText(item != null ? item.getDescription() : "");
+        reviewImage.setImage(ImageUtil.loadThumbnail(item.getImagePath(), 150, 150));
+        proofImageView.setImage(ImageUtil.loadThumbnail(claim.getProofImage(), 150, 150));
+        reviewItemName.setText(item.getName());
+        reviewItemLocation.setText(item.getLocation() == null ? "Not specified" : item.getLocation());
+        reviewItemDesc.setText(item.getDescription());
 
         reviewClaimant.setText(claim.getClaimantName()
                 + "  (" + nz(claim.getClaimantIndexNo()) + ")\n"

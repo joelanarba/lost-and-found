@@ -39,7 +39,10 @@
                         <Label fx:id="descriptionError" styleClass="error-label" visible="false" managed="false"/>
 
                         <Label text="Location Last Seen" styleClass="form-label"/>
-                        <TextField fx:id="locationField" promptText="e.g. Main Library, SWL Block"/>
+                        <HBox spacing="10">
+                            <TextField fx:id="locationField" promptText="e.g. Sam Jonah Library" HBox.hgrow="ALWAYS"/>
+                            <Button text="Map" onAction="#openMapSelector" styleClass="btn-secondary"/>
+                        </HBox>
                         <Label fx:id="locationError" styleClass="error-label" visible="false" managed="false"/>
 
                         <Label text="Date Lost" styleClass="form-label"/>
@@ -55,6 +58,15 @@
                         <Label fx:id="imageError" styleClass="error-label" visible="false" managed="false"/>
                     </VBox>
                 </HBox>
+
+                <VBox fx:id="dupWarnPanel" styleClass="warn-panel" spacing="8.0"
+                      visible="false" managed="false">
+                    <Label text="⚠  Before you submit — we found a possible match already in the system!"
+                           styleClass="warn-panel-title" wrapText="true"/>
+                    <Label fx:id="dupWarnDetail" styleClass="detail-value" wrapText="true"/>
+                    <Button fx:id="dupViewButton" text="View Match" styleClass="btn-secondary"
+                            onAction="#viewMatch"/>
+                </VBox>
 
                 <Region prefHeight="6.0"/>
                 <HBox spacing="10.0">

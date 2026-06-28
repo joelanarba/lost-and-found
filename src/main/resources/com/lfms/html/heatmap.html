@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Campus Heatmap</title>
+    <meta charset="utf-8" />
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { height: 100vh; width: 100vw; }
+    </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    // Initialize map centered on University of Cape Coast
+    var map = L.map('map').setView([5.1053, -1.2841], 15);
+
+    // Use a dark-themed or simple tile layer for analytics
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+    }).addTo(map);
+
+    // Approximate coordinates for known campus locations
+    const coordinates = {
+        "Main Library": [5.106, -1.284],
+        "Science Block": [5.105, -1.282],
+        "SRC Hall": [5.103, -1.286],
+        "Lecture Theatre 1": [5.108, -1.283],
+        "Cafeteria": [5.104, -1.285],
+        "Sports Complex": [5.101, -1.281],
+        "Administration Block": [5.107, -1.288]
+    };
+
+    var circles = [];
+
+    // Global function to be called from Java
+    window.setHeatData = function(jsonStr) {
+        // Clear existing
+        circles.forEach(c => map.removeLayer(c));
+        circles = [];
+
+        // Parse JSON array like: [{"location": "Main Library", "count": 23}, ...]
+        var data = JSON.parse(jsonStr);
+        
+        var maxCount = 1;
+        data.forEach(d => { if (d.count > maxCount) maxCount = d.count; });
+
+        data.forEach(d => {
+            var coords = coordinates[d.location];
+            if (coords) {
+                // Calculate radius based on count relative to max
+                var radius = 20 + (d.count / maxCount) * 80;
+                var circle = L.circle(coords, {
+                    color: '#e74c3c',
+                    fillColor: '#e74c3c',
+                    fillOpacity: 0.6,
+                    radius: radius
+                }).addTo(map);
+                circle.bindPopup("<b>" + d.location + "</b><br>" + d.count + " items lost");
+                circles.push(circle);
+            }
+        });
+    };
+</script>
+</body>
+</html>

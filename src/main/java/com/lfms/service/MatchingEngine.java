@@ -4,11 +4,13 @@ import com.lfms.dao.ItemDAO;
 import com.lfms.dao.MatchDAO;
 import com.lfms.model.Item;
 import com.lfms.model.Match;
+import com.lfms.model.MatchBreakdown;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +26,11 @@ import java.util.Set;
  *   <li>+1 if the reported dates are within 7 days of each other</li>
  * </ul>
  * Only scores &ge; 4 are kept. Confidence: &ge;8 HIGH, 5&ndash;7 MEDIUM, 4 LOW.
+ *
+ * <p>Every score is produced as a structured {@link MatchBreakdown} so the UI can show
+ * <em>why</em> a pair matched without recomputing. {@link #explain(Item, Item)} regenerates
+ * the breakdown for an already-persisted match; {@link #preview(Item)} scores a not-yet-saved
+ * draft against the system without writing anything (used for real-time duplicate detection).</p>
  */
 public class MatchingEngine {
 
@@ -39,63 +46,106 @@ public class MatchingEngine {
 
     /**
      * Finds and persists matches for a newly reported item. Returns all qualifying
-     * matches (newly created or already existing) sorted by descending score.
+     * matches (newly created or already existing) sorted by descending score, each carrying
+     * its {@link MatchBreakdown}.
      */
     public List<Match> findMatches(Item newItem) {
-        String oppositeType = newItem.isLost() ? Item.TYPE_FOUND : Item.TYPE_LOST;
-        List<Item> candidates = itemDAO.findOpenByType(oppositeType);
-
-        Set<String> newName = tokenize(newItem.getName());
-        Set<String> newDesc = tokenize(newItem.getDescription());
-        Set<String> newLoc = tokenize(newItem.getLocation());
-
-        List<Match> results = new ArrayList<>();
-
-        for (Item candidate : candidates) {
-            if (candidate.getItemId() == newItem.getItemId()) {
-                continue;
-            }
-            int score = 0;
-
-            if (newItem.getCategory() != null
-                    && newItem.getCategory().equalsIgnoreCase(candidate.getCategory())) {
-                score += 3;
-            }
-            score += 2 * countSharedTokens(newName, tokenize(candidate.getName()));
-            score += countSharedTokens(newDesc, tokenize(candidate.getDescription()));
-            if (countSharedTokens(newLoc, tokenize(candidate.getLocation())) > 0) {
-                score += 2;
-            }
-            if (withinDays(newItem.getDateReported(), candidate.getDateReported(), DATE_WINDOW_DAYS)) {
-                score += 1;
-            }
-
-            if (score >= THRESHOLD) {
-                int lostId = newItem.isLost() ? newItem.getItemId() : candidate.getItemId();
-                int foundId = newItem.isFound() ? newItem.getItemId() : candidate.getItemId();
-
-                if (!matchDAO.matchExists(lostId, foundId)) {
-                    Match toPersist = new Match();
-                    toPersist.setLostItemId(lostId);
-                    toPersist.setFoundItemId(foundId);
-                    toPersist.setScore(score);
-                    matchDAO.create(toPersist);
-                }
-
-                Match result = new Match(0, lostId, foundId, score, null);
-                result.setLostItemName(newItem.isLost() ? newItem.getName() : candidate.getName());
-                result.setFoundItemName(newItem.isFound() ? newItem.getName() : candidate.getName());
-                results.add(result);
-            }
-        }
-
+        List<Match> results = scanCandidates(newItem, true);
         results.sort((a, b) -> Integer.compare(b.getScore(), a.getScore()));
         return results;
     }
 
+    /**
+     * Scores a not-yet-persisted draft item against the existing opposite-type OPEN items
+     * <em>without writing any match rows</em>. Used by the report forms to warn about a likely
+     * existing match before the user submits. Results are sorted by descending score.
+     */
+    public List<Match> preview(Item draft) {
+        List<Match> results = scanCandidates(draft, false);
+        results.sort((a, b) -> Integer.compare(b.getScore(), a.getScore()));
+        return results;
+    }
+
+    /**
+     * Regenerates the structured breakdown for a known lost/found pair. The scoring is
+     * symmetric, so argument order does not matter. Returns an empty breakdown if either
+     * item is missing.
+     */
+    public MatchBreakdown explain(Item lost, Item found) {
+        if (lost == null || found == null) {
+            return new MatchBreakdown();
+        }
+        return computeBreakdown(lost, found);
+    }
+
+    /** Shared scan used by both {@link #findMatches} and {@link #preview}. */
+    private List<Match> scanCandidates(Item newItem, boolean persist) {
+        String oppositeType = newItem.isLost() ? Item.TYPE_FOUND : Item.TYPE_LOST;
+        List<Item> candidates = itemDAO.findOpenByType(oppositeType);
+
+        List<Match> results = new ArrayList<>();
+        for (Item candidate : candidates) {
+            if (candidate.getItemId() == newItem.getItemId() && newItem.getItemId() != 0) {
+                continue;
+            }
+
+            MatchBreakdown breakdown = computeBreakdown(newItem, candidate);
+            if (breakdown.getScore() < THRESHOLD) {
+                continue;
+            }
+
+            int lostId = newItem.isLost() ? newItem.getItemId() : candidate.getItemId();
+            int foundId = newItem.isFound() ? newItem.getItemId() : candidate.getItemId();
+
+            if (persist && !matchDAO.matchExists(lostId, foundId)) {
+                Match toPersist = new Match();
+                toPersist.setLostItemId(lostId);
+                toPersist.setFoundItemId(foundId);
+                toPersist.setScore(breakdown.getScore());
+                matchDAO.create(toPersist);
+            }
+
+            Match result = new Match(0, lostId, foundId, breakdown.getScore(), null);
+            result.setLostItemName(newItem.isLost() ? newItem.getName() : candidate.getName());
+            result.setFoundItemName(newItem.isFound() ? newItem.getName() : candidate.getName());
+            result.setBreakdown(breakdown);
+            results.add(result);
+        }
+        return results;
+    }
+
+    /** Produces the structured, point-by-point explanation for a pair of items. */
+    private MatchBreakdown computeBreakdown(Item a, Item b) {
+        MatchBreakdown breakdown = new MatchBreakdown();
+
+        if (a.getCategory() != null && a.getCategory().equalsIgnoreCase(b.getCategory())) {
+            breakdown.add("Same category: " + a.getCategory(), 3);
+        }
+
+        Set<String> nameShared = sharedTokens(tokenize(a.getName()), tokenize(b.getName()));
+        Set<String> descShared = sharedTokens(tokenize(a.getDescription()), tokenize(b.getDescription()));
+        int keywordPoints = 2 * nameShared.size() + descShared.size();
+        if (keywordPoints > 0) {
+            Set<String> allWords = new LinkedHashSet<>(nameShared);
+            allWords.addAll(descShared);
+            breakdown.add("Shared keywords: " + String.join(", ", allWords), keywordPoints);
+        }
+
+        if (!sharedTokens(tokenize(a.getLocation()), tokenize(b.getLocation())).isEmpty()) {
+            String loc = b.getLocation() != null && !b.getLocation().isBlank() ? b.getLocation() : a.getLocation();
+            breakdown.add("Same location: " + loc, 2);
+        }
+
+        if (withinDays(a.getDateReported(), b.getDateReported(), DATE_WINDOW_DAYS)) {
+            breakdown.add("Reported around the same time", 1);
+        }
+
+        return breakdown;
+    }
+
     /** Splits text into a set of lower-case, non-stopword tokens (length &ge; 2). */
     private Set<String> tokenize(String text) {
-        Set<String> tokens = new HashSet<>();
+        Set<String> tokens = new LinkedHashSet<>();
         if (text == null) {
             return tokens;
         }
@@ -107,14 +157,15 @@ public class MatchingEngine {
         return tokens;
     }
 
-    private int countSharedTokens(Set<String> a, Set<String> b) {
+    /** The tokens present in both sets (insertion order of {@code a} preserved). */
+    private Set<String> sharedTokens(Set<String> a, Set<String> b) {
+        Set<String> shared = new LinkedHashSet<>();
         if (a.isEmpty() || b.isEmpty()) {
-            return 0;
+            return shared;
         }
-        int shared = 0;
         for (String token : a) {
             if (b.contains(token)) {
-                shared++;
+                shared.add(token);
             }
         }
         return shared;

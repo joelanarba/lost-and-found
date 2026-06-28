@@ -37,6 +37,9 @@ public class ClaimFormController implements SceneNavigator.DataReceiver {
     @FXML private TextField contactField;
     @FXML private Label featuresError;
     @FXML private Label proofError;
+    @FXML private Label imageNameLabel;
+    @FXML private javafx.scene.layout.StackPane imagePreviewFrame;
+    @FXML private ImageView proofImageView;
 
     private final ItemService itemService = new ItemService();
     private final ClaimService claimService = new ClaimService();
@@ -86,6 +89,25 @@ public class ClaimFormController implements SceneNavigator.DataReceiver {
         showForm();
     }
 
+    private String selectedImagePath = null;
+
+    @FXML
+    private void handleChooseImage() {
+        javafx.stage.FileChooser chooser = new javafx.stage.FileChooser();
+        chooser.setTitle("Select Proof Image");
+        chooser.getExtensionFilters().addAll(
+                new javafx.stage.FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
+        );
+        java.io.File file = chooser.showOpenDialog(SceneNavigator.getPrimaryStage());
+        if (file != null) {
+            selectedImagePath = file.getAbsolutePath();
+            imageNameLabel.setText(file.getName());
+            proofImageView.setImage(new javafx.scene.image.Image(file.toURI().toString()));
+            imagePreviewFrame.setVisible(true);
+            imagePreviewFrame.setManaged(true);
+        }
+    }
+
     @FXML
     private void handleSubmit() {
         ValidationUtil.clearAllErrors(featuresError, proofError);
@@ -115,11 +137,22 @@ public class ClaimFormController implements SceneNavigator.DataReceiver {
             proof = proof + "\n\nPreferred contact: " + contactField.getText().trim();
         }
 
+        String savedImagePath = null;
+        if (selectedImagePath != null) {
+            try {
+                savedImagePath = ImageUtil.copyImageToStorage(new java.io.File(selectedImagePath));
+            } catch (RuntimeException e) {
+                Dialogs.error("Image Error", "Could not save the image: " + e.getMessage());
+                return;
+            }
+        }
+
         Claim claim = new Claim();
         claim.setItemId(itemId);
         claim.setClaimantId(user.getUserId());
         claim.setFeaturesDesc(featuresArea.getText().trim());
         claim.setProofDesc(proof);
+        claim.setProofImage(savedImagePath);
         claim.setStatus(Claim.STATUS_PENDING);
 
         try {

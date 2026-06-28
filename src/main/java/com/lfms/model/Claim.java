@@ -19,6 +19,7 @@ public class Claim {
     private int claimantId;
     private String featuresDesc;
     private String proofDesc;
+    private String proofImage;
     private String status;
     private String adminNote;
     private String createdAt;
@@ -36,13 +37,14 @@ public class Claim {
     public Claim() {
     }
 
-    public Claim(int claimId, int itemId, int claimantId, String featuresDesc, String proofDesc,
+    public Claim(int claimId, int itemId, int claimantId, String featuresDesc, String proofDesc, String proofImage,
                  String status, String adminNote, String createdAt) {
         this.claimId = claimId;
         this.itemId = itemId;
         this.claimantId = claimantId;
         this.featuresDesc = featuresDesc;
         this.proofDesc = proofDesc;
+        this.proofImage = proofImage;
         this.status = status;
         this.adminNote = adminNote;
         this.createdAt = createdAt;
@@ -86,6 +88,14 @@ public class Claim {
 
     public void setProofDesc(String proofDesc) {
         this.proofDesc = proofDesc;
+    }
+
+    public String getProofImage() {
+        return proofImage;
+    }
+
+    public void setProofImage(String proofImage) {
+        this.proofImage = proofImage;
     }
 
     public String getStatus() {

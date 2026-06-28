@@ -7,24 +7,23 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 /**
- * Image storage and loading helper. Uploaded images are copied into {@code data/images/}
- * under a random UUID filename; only the filename is stored in the database.
+ * Image storage and loading helper. Uploaded images are copied into
+ * {@code <user.home>/LFMS/images/} under a random UUID filename; only the filename is
+ * stored in the database.
  */
 public class ImageUtil {
 
-    private static final String IMAGES_DIR = "data/images";
     private static final String PLACEHOLDER = "/com/lfms/images/placeholder.png";
 
     private ImageUtil() {
     }
 
     /**
-     * Copies the chosen image into {@code data/images/} with a unique filename.
+     * Copies the chosen image into {@code <user.home>/LFMS/images/} with a unique filename.
      * @return the stored filename (not the full path), or null if no file was given.
      */
     public static String copyImageToStorage(File sourceFile) {
@@ -32,10 +31,10 @@ public class ImageUtil {
             return null;
         }
         try {
-            Files.createDirectories(Paths.get(IMAGES_DIR));
+            Files.createDirectories(AppPaths.IMAGES_DIR);
             String ext = extensionOf(sourceFile.getName());
             String filename = UUID.randomUUID() + (ext.isEmpty() ? "" : "." + ext);
-            Path target = Paths.get(IMAGES_DIR, filename);
+            Path target = AppPaths.IMAGES_DIR.resolve(filename);
             Files.copy(sourceFile.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
             return filename;
         } catch (IOException e) {
@@ -76,7 +75,7 @@ public class ImageUtil {
         if (filename == null || filename.isBlank()) {
             return null;
         }
-        return new File(IMAGES_DIR, filename);
+        return AppPaths.IMAGES_DIR.resolve(filename).toFile();
     }
 
     private static String extensionOf(String name) {

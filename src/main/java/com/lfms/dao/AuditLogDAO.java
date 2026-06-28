@@ -69,6 +69,19 @@ public class AuditLogDAO {
         }
     }
 
+    /** Audit entries against a specific target (e.g. a CLAIM or ITEM), oldest first. */
+    public List<AuditLog> findByTarget(String targetType, int targetId) {
+        String sql = BASE_SELECT + "WHERE a.target_type = ? AND a.target_id = ? ORDER BY a.log_id ASC";
+        try (Connection c = DatabaseManager.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, targetType);
+            ps.setInt(2, targetId);
+            return collect(ps);
+        } catch (SQLException e) {
+            throw new RuntimeException("AuditLogDAO.findByTarget failed", e);
+        }
+    }
+
     private List<AuditLog> collect(PreparedStatement ps) throws SQLException {
         try (ResultSet rs = ps.executeQuery()) {
             List<AuditLog> logs = new ArrayList<>();

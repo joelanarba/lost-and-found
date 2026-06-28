@@ -1,6 +1,7 @@
 package com.lfms.controller;
 
 import com.lfms.model.User;
+import com.lfms.util.NotificationBell;
 import com.lfms.util.SceneNavigator;
 import com.lfms.util.SessionManager;
 import javafx.fxml.FXML;
@@ -23,8 +24,12 @@ public class SidebarController {
     @FXML private Button btnMyReports;
     @FXML private Label userNameLabel;
     @FXML private Label userRoleLabel;
+    @FXML private Button bellButton;
+    @FXML private Label notifBadge;
+    @FXML private javafx.scene.layout.HBox badgeBox;
 
     private Map<String, Button> navButtons;
+    private final com.lfms.service.ClaimService claimService = new com.lfms.service.ClaimService();
 
     @FXML
     public void initialize() {
@@ -39,7 +44,31 @@ public class SidebarController {
         if (user != null) {
             userNameLabel.setText(user.getName());
             userRoleLabel.setText(user.getRole());
+
+            int successfulReturns = claimService.countSuccessfulReturns(user.getUserId());
+            if (badgeBox != null) {
+                badgeBox.getChildren().clear();
+                if (successfulReturns >= 1) {
+                    Label bronze = new Label("🥉");
+                    bronze.setStyle("-fx-font-size: 18px;");
+                    javafx.scene.control.Tooltip.install(bronze, new javafx.scene.control.Tooltip("Good Samaritan - 1 return"));
+                    badgeBox.getChildren().add(bronze);
+                }
+                if (successfulReturns >= 5) {
+                    Label silver = new Label("🥈");
+                    silver.setStyle("-fx-font-size: 18px;");
+                    javafx.scene.control.Tooltip.install(silver, new javafx.scene.control.Tooltip("Campus Hero - 5 returns"));
+                    badgeBox.getChildren().add(silver);
+                }
+                if (successfulReturns >= 10) {
+                    Label gold = new Label("🥇");
+                    gold.setStyle("-fx-font-size: 18px;");
+                    javafx.scene.control.Tooltip.install(gold, new javafx.scene.control.Tooltip("Legend - 10 returns"));
+                    badgeBox.getChildren().add(gold);
+                }
+            }
         }
+        NotificationBell.install(bellButton, notifBadge);
     }
 
     /** Highlights the active nav button (key matches the map above). */
@@ -82,8 +111,20 @@ public class SidebarController {
     }
 
     @FXML
+    private void openNotifications() {
+        if (bellButton != null) {
+            bellButton.fire();
+        }
+    }
+
+    @FXML
     private void logout() {
         SessionManager.getInstance().clearSession();
         SceneNavigator.navigateTo("/com/lfms/fxml/Login.fxml");
+    }
+
+    @FXML
+    private void toggleTheme() {
+        SceneNavigator.toggleTheme();
     }
 }

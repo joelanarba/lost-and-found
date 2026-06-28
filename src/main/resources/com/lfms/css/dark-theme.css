@@ -1,0 +1,63 @@
+.root {
+    -fx-base: #1a1a2e;
+    -fx-background: #1a1a2e;
+    -fx-control-inner-background: #252542;
+    -fx-text-base-color: #e0e0e0;
+    -fx-text-fill: #e0e0e0;
+}
+
+.sidebar {
+    -fx-background-color: #111122;
+}
+
+.sidebar-btn {
+    -fx-text-fill: #e0e0e0;
+}
+
+.sidebar-btn:hover, .sidebar-btn.active {
+    -fx-background-color: #252542;
+}
+
+.content-area {
+    -fx-background-color: #1a1a2e;
+}
+
+.card, .stat-card, .chart-card {
+    -fx-background-color: #252542;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 8, 0, 0, 3);
+}
+
+.page-title {
+    -fx-text-fill: #ffffff;
+}
+
+.page-subtitle, .form-label, .stat-label {
+    -fx-text-fill: #bbbbbb;
+}
+
+.stat-number {
+    -fx-text-fill: #ffffff;
+}
+
+.text-field, .combo-box, .text-area, .date-picker {
+    -fx-background-color: #111122;
+    -fx-text-fill: #e0e0e0;
+    -fx-border-color: #333355;
+}
+
+.table-view {
+    -fx-background-color: #252542;
+}
+
+.table-view .column-header {
+    -fx-background-color: #111122;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: #252542;
+    -fx-text-fill: #e0e0e0;
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: #2a2a4a;
+}

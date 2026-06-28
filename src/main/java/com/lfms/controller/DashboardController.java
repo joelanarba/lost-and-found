@@ -5,8 +5,10 @@ import com.lfms.model.Match;
 import com.lfms.model.User;
 import com.lfms.service.ClaimService;
 import com.lfms.service.ItemService;
+import com.lfms.util.MatchBreakdownView;
 import com.lfms.util.SceneNavigator;
 import com.lfms.util.SessionManager;
+import com.lfms.util.StatFormat;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -26,6 +28,8 @@ public class DashboardController {
     @FXML private Label openLostLabel;
     @FXML private Label openFoundLabel;
     @FXML private Label pendingClaimsLabel;
+    @FXML private Label recoveryRateLabel;
+    @FXML private Label topCategoryLabel;
     @FXML private FlowPane matchesPane;
     @FXML private Label emptyMatchesLabel;
 
@@ -46,6 +50,10 @@ public class DashboardController {
         openFoundLabel.setText(String.valueOf(itemService.countOpenByType(Item.TYPE_FOUND)));
         int pending = user != null ? claimService.countPendingByClaimant(user.getUserId()) : 0;
         pendingClaimsLabel.setText(String.valueOf(pending));
+
+        recoveryRateLabel.setText(StatFormat.recoveryRate(itemService.recoveryRate()));
+        topCategoryLabel.setText(StatFormat.mostLostCategory(
+                itemService.topLostCategory(), itemService.countByType(Item.TYPE_LOST)));
     }
 
     private void loadMatches(User user) {
@@ -67,7 +75,7 @@ public class DashboardController {
         VBox card = new VBox(8.0);
         card.getStyleClass().add("match-card");
 
-        Label badge = new Label(match.getConfidence() + " CONFIDENCE");
+        Label badge = new Label("Match Confidence: " + match.getConfidence() + " (" + match.getScore() + "/10)");
         badge.getStyleClass().add(confidenceClass(match.getConfidence()));
 
         Label lost = new Label("LOST:  " + match.getLostItemName());
@@ -81,11 +89,14 @@ public class DashboardController {
         found.getStyleClass().add("detail-value");
         found.setWrapText(true);
 
+        // Visual breakdown panel explaining the score instead of a bare number.
+        VBox breakdown = MatchBreakdownView.build(match.getBreakdown());
+
         Button view = new Button("View Details");
         view.getStyleClass().add("btn-secondary");
         view.setOnAction(e -> openDetail(match, currentUserId));
 
-        card.getChildren().addAll(badge, lost, arrow, found, view);
+        card.getChildren().addAll(badge, lost, arrow, found, breakdown, view);
         return card;
     }
 
@@ -103,5 +114,20 @@ public class DashboardController {
             case "MEDIUM" -> "badge-medium";
             default -> "badge-low";
         };
+    }
+
+    @FXML
+    private void goToBrowseLost() {
+        SceneNavigator.navigateTo("/com/lfms/fxml/Browse.fxml");
+    }
+
+    @FXML
+    private void goToBrowseFound() {
+        SceneNavigator.navigateTo("/com/lfms/fxml/Browse.fxml");
+    }
+
+    @FXML
+    private void goToMyClaims() {
+        SceneNavigator.navigateTo("/com/lfms/fxml/MyReports.fxml");
     }
 }
