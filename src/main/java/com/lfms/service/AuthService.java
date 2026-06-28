@@ -18,11 +18,11 @@ public class AuthService {
      * Attempts to log a user in. Returns the {@link User} on success, or {@code null} if the
      * email is unknown, the account is deactivated, or the password is wrong.
      */
-    public User login(String email, String password) {
-        if (!ValidationUtil.isNotEmpty(email) || !ValidationUtil.isNotEmpty(password)) {
+    public User login(String identifier, String password) {
+        if (!ValidationUtil.isNotEmpty(identifier) || !ValidationUtil.isNotEmpty(password)) {
             return null;
         }
-        User user = userDAO.findByEmail(email.trim());
+        User user = userDAO.findByEmailOrIndex(identifier.trim());
         if (user == null || !user.isActive()) {
             return null;
         }

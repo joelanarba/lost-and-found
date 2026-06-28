@@ -47,7 +47,7 @@ public class LoginController implements SceneNavigator.DataReceiver {
         try {
             User user = authService.login(email, password);
             if (user == null) {
-                ValidationUtil.showError(errorLabel, "Invalid email or password.");
+                ValidationUtil.showError(errorLabel, "Invalid email/index or password.");
                 return;
             }
             SessionManager.getInstance().setCurrentUser(user);
@@ -74,7 +74,7 @@ public class LoginController implements SceneNavigator.DataReceiver {
             if (seeded) {
                 showSuccess("Demo data loaded. Sign in as  " + DemoDataService.DEMO_EMAIL
                         + " / " + DemoDataService.DEMO_PASSWORD
-                        + "  (admin: admin@lfms.edu / Admin@1234).");
+                        + "  (admin: admin@gmail.com / 12345678).");
             } else {
                 showSuccess("Demo data is already loaded. Sign in as  "
                         + DemoDataService.DEMO_EMAIL + " / " + DemoDataService.DEMO_PASSWORD + ".");

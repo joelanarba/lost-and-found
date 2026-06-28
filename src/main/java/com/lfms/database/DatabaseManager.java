@@ -170,12 +170,12 @@ public final class DatabaseManager {
                 try (PreparedStatement ps = conn.prepareStatement(insertSql)) {
                     ps.setString(1, "System Admin");
                     ps.setString(2, "ADMIN001");
-                    ps.setString(3, "admin@lfms.edu");
-                    ps.setString(4, BCrypt.hashpw("Admin@1234", BCrypt.gensalt(12)));
+                    ps.setString(3, "admin@gmail.com");
+                    ps.setString(4, BCrypt.hashpw("12345678", BCrypt.gensalt(12)));
                     ps.setString(5, null);
                     ps.executeUpdate();
                 }
-                System.out.println("[LFMS] Seeded default admin account (admin@lfms.edu / Admin@1234).");
+                System.out.println("[LFMS] Seeded default admin account (admin@gmail.com / 12345678).");
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to seed default admin user", e);

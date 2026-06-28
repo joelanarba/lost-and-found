@@ -29,6 +29,20 @@ public class UserDAO {
         }
     }
 
+    public User findByEmailOrIndex(String identifier) {
+        String sql = "SELECT * FROM users WHERE email = ? OR index_no = ?";
+        try (Connection c = DatabaseManager.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, identifier);
+            ps.setString(2, identifier);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? map(rs) : null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("UserDAO.findByEmailOrIndex failed", e);
+        }
+    }
+
     public User findById(int userId) {
         String sql = "SELECT * FROM users WHERE user_id = ?";
         try (Connection c = DatabaseManager.getConnection();

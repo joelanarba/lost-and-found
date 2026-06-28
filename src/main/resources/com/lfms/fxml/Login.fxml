@@ -57,8 +57,8 @@
             <Label fx:id="successLabel" style="-fx-text-fill:#15803D; -fx-font-size:12px;" wrapText="true"
                    visible="false" managed="false"/>
             <Region prefHeight="16.0"/>
-            <Label text="Email" styleClass="form-label"/>
-            <TextField fx:id="emailField" promptText="you@stu.ucc.edu.gh"/>
+            <Label text="Email or Index Number" styleClass="form-label"/>
+            <TextField fx:id="emailField" promptText="Email or Index No"/>
             <Region prefHeight="8.0"/>
             <Label text="Password" styleClass="form-label"/>
             <PasswordField fx:id="passwordField" promptText="Your password" onAction="#handleLogin"/>

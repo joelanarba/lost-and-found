@@ -20,7 +20,7 @@ import java.util.List;
 public class DemoDataService {
 
     public static final String DEMO_PASSWORD = "Password1";
-    public static final String DEMO_EMAIL    = "kofi.mensah@stu.ucc.edu.gh";
+    public static final String DEMO_EMAIL    = "joel.amuni@stu.ucc.edu.gh";
     private static final String MARKER_EMAIL = DEMO_EMAIL;
 
     private final UserDAO userDAO = new UserDAO();
@@ -35,23 +35,25 @@ public class DemoDataService {
         }
 
         // --- Students (UCC, @stu.ucc.edu.gh) ---
-        register("Kofi Mensah",    "SB/ITC/21/0001", MARKER_EMAIL,                    "0244000001");
-        register("Ama Owusu",      "FA/ENG/21/0042", "ama.owusu@stu.ucc.edu.gh",      "0244000002");
-        register("Yaw Boateng",    "SP/PHY/20/0113", "yaw.boateng@stu.ucc.edu.gh",    "0244000003");
-        register("Akosua Agyeman", "FE/EDU/22/0207", "akosua.agyeman@stu.ucc.edu.gh", "0244000004");
-        register("Kwame Appiah",   "SB/ACC/21/0388", "kwame.appiah@stu.ucc.edu.gh",   "0244000005");
-        register("Efua Sarpong",   "SM/NUR/20/0076", "efua.sarpong@stu.ucc.edu.gh",   "0244000006");
-        register("Kwesi Nkrumah",  "SP/CHE/22/0511", "kwesi.nkrumah@stu.ucc.edu.gh",  "0244000007");
-        register("Abena Asante",   "FA/HIS/21/0299", "abena.asante@stu.ucc.edu.gh",   "0244000008");
+        register("Joel Anarba Amuni",  "PS/CSC/23/0043", MARKER_EMAIL,                        "0244000005");
+        register("Sherif Haruna",      "PS/CSC/23/0131", "sherif.haruna@stu.ucc.edu.gh",      "0244000001");
+        register("Yakubu Abdulai",     "PS/CSC/23/0050", "yakubu.abdulai@stu.ucc.edu.gh",     "0244000002");
+        register("Rita Tsotsoo Tetteh","PS/CSC/23/0073", "rita.tetteh@stu.ucc.edu.gh",        "0244000003");
+        register("Egmine James",       "PS/CSC/23/0163", "egmine.james@stu.ucc.edu.gh",       "0244000004");
+        register("Akudugu Abdul-Latif","PS/CSC/23/0012", "akudugu.abdul-latif@stu.ucc.edu.gh","0244000006");
+        register("Noamesi Enyonam Elena","PS/CSC/23/0124","noamesi.elena@stu.ucc.edu.gh",      "0244000007");
+        register("Yakubu Saeed",       "PS/CSC/23/0100", "yakubu.saeed@stu.ucc.edu.gh",       "0244000008");
+        register("Kukekpor Bernice",   "PS/CSC/23/0060", "kukekpor.bernice@stu.ucc.edu.gh",   "0244000009");
+        register("Theophilus Botchway","PS/CSC/23/0064", "theophilus.botchway@stu.ucc.edu.gh","0244000010");
 
-        User kofi   = user(MARKER_EMAIL);
-        User ama    = user("ama.owusu@stu.ucc.edu.gh");
-        User yaw    = user("yaw.boateng@stu.ucc.edu.gh");
-        User akosua = user("akosua.agyeman@stu.ucc.edu.gh");
-        User kwame  = user("kwame.appiah@stu.ucc.edu.gh");
-        User efua   = user("efua.sarpong@stu.ucc.edu.gh");
-        User kwesi  = user("kwesi.nkrumah@stu.ucc.edu.gh");
-        User abena  = user("abena.asante@stu.ucc.edu.gh");
+        User kofi   = user(MARKER_EMAIL); // mapped to joel
+        User ama    = user("sherif.haruna@stu.ucc.edu.gh");
+        User yaw    = user("yakubu.abdulai@stu.ucc.edu.gh");
+        User akosua = user("rita.tetteh@stu.ucc.edu.gh");
+        User kwame  = user("egmine.james@stu.ucc.edu.gh");
+        User efua   = user("akudugu.abdul-latif@stu.ucc.edu.gh");
+        User kwesi  = user("noamesi.elena@stu.ucc.edu.gh");
+        User abena  = user("yakubu.saeed@stu.ucc.edu.gh");
 
         // --- Matching lost & found pairs (drive the suggestion engine) ---
         report(kofi, Item.TYPE_LOST, "Black HP Pavilion laptop", "Electronics",
